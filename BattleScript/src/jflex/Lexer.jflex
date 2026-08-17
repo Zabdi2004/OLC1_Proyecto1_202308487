@@ -1,6 +1,7 @@
 package jflex;
 
 import java_cup.runtime.Symbol;
+import cup.sym;
 
 %%
 
@@ -9,7 +10,7 @@ import java_cup.runtime.Symbol;
 %cup
 %line
 %column
-%state COMMENT /* Para los comentarios multilínea */
+%state COMMENT 
 %public
 
 %{
@@ -26,9 +27,9 @@ import java_cup.runtime.Symbol;
 Digito = [0-9]
 Letra = [a-zA-Z]
 ID = {Letra}({Letra}|{Digito}|_)* //Identificador
-Entero = {Digito}+
-Decimal = {Digito}+"."{Digito}+
-Whitespace = [ \t\r\n]+
+ENTERO = {Digito}+
+DECIMAL = {Digito}+"."{Digito}+
+WHITESPACE = [ \t\r\n]+
 
 
 %%
@@ -40,7 +41,7 @@ Whitespace = [ \t\r\n]+
 
     "/*" { yybegin(COMMENT); }  // al abrir "/*", cambia al estado COMMENT
     
-    {Whitespace}    { /* Ignorar espacios */ }
+    {WHITESPACE}    { /* Ignorar espacios */ }
     
     /* ~ ~ ~ ~ ~ Palabras reservadas ~ ~ ~ ~ ~ */
     "mage" { return symbol(sym.MAGE); }
@@ -92,16 +93,19 @@ Whitespace = [ \t\r\n]+
     "last_move"               { return symbol(sym.LAST_MOVE); }
 
     /* ~ ~ ~ ~ ~ Acciones ~ ~ ~ ~ ~ */
+    /* ~ ~ ~ ~ ~ Mago ~ ~ ~ ~ ~ */
     "ARCANE_BOLT"    |
     "FIREBALL"       |
     "MAGIC_BARRIER"  |
     "HEALING_RUNE"   |
-    "MEDITATE"       |
+    "MEDITATE"       { return symbol(sym.ACCION_MAGO,yytext());}
+    
+    /* ~ ~ ~ ~ ~ Guerrero ~ ~ ~ ~ ~ */
     "SLASH"          |
     "HEAVY_STRIKE"   |
     "SHIELD_BLOCK"   |
     "WAR_CRY"        |
-    "REST"                   { return symbol(sym.ACTION, yytext()); }
+    "REST"                   { return symbol(sym.ACCION_GUERRERO, yytext()); }
 
     /* ~ ~ ~ ~ ~ Operadores ~ ~ ~ ~ ~ */
     "=="                     { return symbol(sym.EQ); }
@@ -116,18 +120,18 @@ Whitespace = [ \t\r\n]+
     "!"                      { return symbol(sym.NOT); }
 
     /* ~ ~ ~ ~ ~ Símbolos ~ ~ ~ ~ ~ */
-    "{"                      { return symbol(sym.LBRACE); }
-    "}"                      { return symbol(sym.RBRACE); }
-    "["                      { return symbol(sym.LBRACKET); }
-    "]"                      { return symbol(sym.RBRACKET); }
-    "("                      { return symbol(sym.LPAREN); }
-    ")"                      { return symbol(sym.RPAREN); }
-    ":"                      { return symbol(sym.COLON); }
-    ","                      { return symbol(sym.COMMA); }
+    "{"                      { return symbol(sym.LLAVEA); } //A = ABRE
+    "}"                      { return symbol(sym.LLAVEC); } //C = CIERRA
+    "["                      { return symbol(sym.CORCHETEA); }
+    "]"                      { return symbol(sym.CORCHETEC); }
+    "("                      { return symbol(sym.PARENTESISA); }
+    ")"                      { return symbol(sym.PARENTESISC); }
+    ":"                      { return symbol(sym.OJOS); }
+    ","                      { return symbol(sym.COMA); }
 
     /* ~ ~ ~ ~ ~ Literales numéricos ~ ~ ~ ~ ~ */
-    {Decimal}                  { return symbol(sym.Decimal, Double.parseDouble(yytext())); }
-    {Entero}                    { return symbol(sym.Entero, Integer.parseInt(yytext())); }
+    {DECIMAL}                  { return symbol(sym.DECIMAL, Double.parseDouble(yytext())); }
+    {ENTERO}                    { return symbol(sym.ENTERO, Integer.parseInt(yytext())); }
 
     /* ~ ~ ~ ~ ~ Identificadores ~ ~ ~ ~ ~ */
     {ID}                     { return symbol(sym.ID, yytext()); }
@@ -147,8 +151,8 @@ Whitespace = [ \t\r\n]+
     \r\n      { /* Ignorar Salto de Línea */ }
     \n        { /* Ignorar Salto de Línea */ }
     \r        { /* Ignorar Salto de Línea */ }
-    <<EOF>>   { registrarError("Comentario multilínea sin cerrar");
-                return new Symbol(sym.EOF);}     
+    <<EOF>>   { System.err.println("Error léxico: comentario multilínea sin cerrar");
+                return new Symbol(sym.EOF);}   
 
 }
 

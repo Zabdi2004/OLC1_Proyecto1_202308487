@@ -1,0 +1,153 @@
+package cup;
+
+import jflex.Lexer;
+import java_cup.runtime.Symbol;
+
+parser code {:
+    Lexer lexer;
+    //Tengo que ver si el enunciado decía algo de errores 
+
+    //Conexion de parser y lexer
+    //constructor
+    public Parser(Lexer lexer) {
+        super(lexer);
+        this.lexer = lexer;
+    }
+
+    //Getters (no sé si me servirán)
+    public Lexer getLexer(){
+        return this.lexer;
+    }
+    
+:};
+
+scan with {:
+    return lexer.next_token();
+:};
+
+
+/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ Terminales ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
+//Terminales: Tokens que nos retorna el lexer 
+/* ~ ~ ~ ~ ~ Palabras reservadas ~ ~ ~ ~ ~ */
+terminal MAGE;
+terminal WARRIOR;
+terminal INITIAL;
+terminal RULES;
+terminal IF;
+terminal THEN;
+terminal ELSE;
+terminal MATCH;
+terminal PLAYERS;
+terminal ROUNDS;
+terminal SCORING;
+terminal BONUSES;
+terminal MAIN;
+terminal RUN;
+terminal WITH;
+terminal SEED;
+
+/* ~ ~ ~ ~ ~ Estados ~ ~ ~ ~ ~ */
+terminal SELF_HEALTH;
+terminal OPPONENT_HEALTH;
+terminal SELF_RESOURCE;
+terminal OPPONENT_RESOURCE;
+terminal SELF_SCORE;
+terminal OPPONENT_SCORE;
+terminal ROUND_NUMBER;
+terminal TOTAL_ROUNDS;
+terminal SELF_HISTORY;
+terminal OPPONENT_HISTORY;
+terminal RANDOM;
+
+/* ~ ~ ~ ~ ~ Propiedades ~ ~ ~ ~ ~ */
+terminal DAMAGE_POINT;
+terminal HEALING_POINT;
+terminal SUCCESSFUL_DEFENSE;
+terminal VICTORY_BONUS;
+terminal FAILED_ACTION_PENALTY;
+terminal MAGE_COMBO_POINTS;
+terminal MAGE_COMBO;
+terminal WARRIOR_COMBO_POINTS;
+terminal WARRIOR_COMBO;
+terminal LOW_HEALTH_VICTORY;
+
+/* ~ ~ ~ ~ ~ Funciones ~ ~ ~ ~ ~ */
+terminal GET_MOVES_COUNT;
+terminal GET_LAST_N_MOVES;
+terminal GET_MOVE;
+terminal LAST_MOVE;
+
+/* ~ ~ ~ ~ ~ Acciones ~ ~ ~ ~ ~ */
+terminal String ACCION_MAGO;
+terminal String ACCION_GUERRERO;
+
+/* ~ ~ ~ ~ ~ Operadores ~ ~ ~ ~ ~ */
+terminal EQ;
+terminal NEQ;
+terminal GE;
+terminal LE;
+terminal GT;
+terminal LT;
+
+terminal AND;
+terminal OR;
+terminal NOT;
+
+/* ~ ~ ~ ~ ~ Símbolos ~ ~ ~ ~ ~ */
+terminal LLAVEA;
+terminal LLAVEC;
+terminal PARENTESISA;
+terminal PARENTESISC;
+terminal CORCHETEA;
+terminal CORCHETEC;
+terminal OJOS;
+terminal COMA;
+
+/* ~ ~ ~ ~ ~ Literales numéricos ~ ~ ~ ~ ~ */
+terminal Double DECIMAL;
+terminal Integer ENTERO;
+terminal String ID;
+
+/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ No Terminales ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
+// No Terminales: reglas que definiremos para la estrucura sintáctica del lenguaje
+
+non terminal programa;
+non terminal lista_estrategias;
+non terminal lista_partidas;
+non terminal estrategia;
+non terminal partida;
+non terminal main;
+
+/* ~ ~ ~ ~ ~ Acciones ~ ~ ~ ~ ~ */
+non terminal accion; /* para accion_mago o accion_guerrero*/
+
+/* ~ ~ ~ ~ ~ Reglas de Estrategia ~ ~ ~ ~ ~ */
+non terminal reglas_mago;
+non terminal regla_mago;
+non terminal lista_reglas_mago;
+
+non terminal reglas_guerrero;
+non terminal regla_guerrero;
+non terminal lista_reglas_guerrero;
+
+/* ~ ~ ~ ~ ~ Bloques de partida ~ ~ ~ ~ ~ */
+non terminal bloque_scoring;
+non terminal bloque_bonuses;
+
+/* ~ ~ ~ ~ ~ Bloque main ~ ~ ~ ~ ~ */
+non terminal lista_run;
+non terminal instruccion_run;
+non terminal lista_ids;
+
+/* ~ ~ ~ ~ ~ Símbolo inicial ~ ~ ~ ~ ~ */
+
+start with programa;
+
+
+/* ~ ~ ~ ~ ~ Gramática principal ~ ~ ~ ~ ~ */
+
+programa ::= lista_estrategias lista_partidas main;
+
+lista_estrategias ::= lista_estrategias estrategia | estrategia;
+lista_partidas ::= lista_partidas partida | partida;
+
