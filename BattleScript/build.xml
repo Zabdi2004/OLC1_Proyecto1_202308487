@@ -14,13 +14,14 @@
     <target name="-pre-compile" depends="generate"/>
     <target name="generate">
         
-        <jflex file="${jflex}/Lexer.jflex" destdir="${java}"/>
+        <jflex file="${jflex}/Lexer.jflex" destdir="${java}/analyzer"/>
         
         <cup srcfile="${cup}/Parser.cup"
              destdir="${java}"
              parser="Parser"
              interface="true"
              locations="false"
+             expect="6"
              force="true"/>
         
     </target>
@@ -28,10 +29,10 @@
     <!-- Eliminar archivos generados al hacer Clean -->
     <target name="-post-clean">
         
-        <delete file="${java}/lexer/Lexer.java" quiet="true"/>
-        <delete file="${java}/parser/Parser.java" quiet="true"/>
-        <delete file="${java}/parser/sym.java" quiet="true"/>
-        <delete file="${java}/parser/ParserSym.java" quiet="true"/>
+        <delete file="${java}/analyzer/Lexer.java" quiet="true"/>
+        <delete file="${java}/analyzer/Parser.java" quiet="true"/>
+        <delete file="${java}/analyzer/sym.java" quiet="true"/>
+        <delete file="${java}/analyzer/ParserSym.java" quiet="true"/>
         
     </target>
 </project>

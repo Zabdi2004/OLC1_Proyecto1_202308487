@@ -1,153 +1,352 @@
-package cup;
+package analyzer;
 
-import jflex.Lexer;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.List;
+import battlescript.model.*;
+import engine.context.Context;
+import engine.expressions.*;
+import engine.rules.*;
 
 parser code {:
-    Lexer lexer;
-    //Tengo que ver si el enunciado decía algo de errores 
+    private Lexer lexer;
+    private List<Error> errors = new ArrayList<>();
 
-    //Conexion de parser y lexer
-    //constructor
     public Parser(Lexer lexer) {
         super(lexer);
         this.lexer = lexer;
     }
 
-    //Getters (no sé si me servirán)
-    public Lexer getLexer(){
+    public Lexer getLexer() {
         return this.lexer;
     }
-    
+
+    public List<Error> getErrors() {
+        List<Error> all = new ArrayList<>(lexer.getLexicalErrors());
+        all.addAll(errors);
+        return all;
+    }
+
+    public void report_error(String message, Object info) {
+        if (info instanceof Symbol) {
+            Symbol s = (Symbol) info;
+            errors.add(new Error("Sintáctico", message, s.left, s.right));
+        } else {
+            errors.add(new Error("Sintáctico", message, 0, 0));
+        }
+    }
 :};
 
 scan with {:
     return lexer.next_token();
 :};
 
-
-/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ Terminales ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
-//Terminales: Tokens que nos retorna el lexer 
-/* ~ ~ ~ ~ ~ Palabras reservadas ~ ~ ~ ~ ~ */
-terminal MAGE;
-terminal WARRIOR;
-terminal INITIAL;
-terminal RULES;
-terminal IF;
-terminal THEN;
-terminal ELSE;
-terminal MATCH;
-terminal PLAYERS;
-terminal ROUNDS;
-terminal SCORING;
-terminal BONUSES;
-terminal MAIN;
-terminal RUN;
-terminal WITH;
-terminal SEED;
-
-/* ~ ~ ~ ~ ~ Estados ~ ~ ~ ~ ~ */
-terminal SELF_HEALTH;
-terminal OPPONENT_HEALTH;
-terminal SELF_RESOURCE;
-terminal OPPONENT_RESOURCE;
-terminal SELF_SCORE;
-terminal OPPONENT_SCORE;
-terminal ROUND_NUMBER;
-terminal TOTAL_ROUNDS;
-terminal SELF_HISTORY;
-terminal OPPONENT_HISTORY;
-terminal RANDOM;
-
-/* ~ ~ ~ ~ ~ Propiedades ~ ~ ~ ~ ~ */
-terminal DAMAGE_POINT;
-terminal HEALING_POINT;
-terminal SUCCESSFUL_DEFENSE;
-terminal VICTORY_BONUS;
-terminal FAILED_ACTION_PENALTY;
-terminal MAGE_COMBO_POINTS;
-terminal MAGE_COMBO;
-terminal WARRIOR_COMBO_POINTS;
-terminal WARRIOR_COMBO;
-terminal LOW_HEALTH_VICTORY;
-
-/* ~ ~ ~ ~ ~ Funciones ~ ~ ~ ~ ~ */
-terminal GET_MOVES_COUNT;
-terminal GET_LAST_N_MOVES;
-terminal GET_MOVE;
-terminal LAST_MOVE;
-
-/* ~ ~ ~ ~ ~ Acciones ~ ~ ~ ~ ~ */
-terminal String ACCION_MAGO;
-terminal String ACCION_GUERRERO;
-
-/* ~ ~ ~ ~ ~ Operadores ~ ~ ~ ~ ~ */
-terminal EQ;
-terminal NEQ;
-terminal GE;
-terminal LE;
-terminal GT;
-terminal LT;
-
-terminal AND;
-terminal OR;
-terminal NOT;
-
-/* ~ ~ ~ ~ ~ Símbolos ~ ~ ~ ~ ~ */
-terminal LLAVEA;
-terminal LLAVEC;
-terminal PARENTESISA;
-terminal PARENTESISC;
-terminal CORCHETEA;
-terminal CORCHETEC;
-terminal OJOS;
-terminal COMA;
-
-/* ~ ~ ~ ~ ~ Literales numéricos ~ ~ ~ ~ ~ */
+/* Terminales */
+terminal MAGE, WARRIOR, INITIAL, RULES, IF, THEN, ELSE;
+terminal MATCH, PLAYERS, ROUNDS, SCORING, BONUSES;
+terminal MAIN, RUN, WITH, SEED;
+terminal SELF_HEALTH, OPPONENT_HEALTH, SELF_RESOURCE, OPPONENT_RESOURCE;
+terminal SELF_SCORE, OPPONENT_SCORE, ROUND_NUMBER, TOTAL_ROUNDS;
+terminal SELF_HISTORY, OPPONENT_HISTORY, RANDOM;
+terminal DAMAGE_POINT, HEALING_POINT, SUCCESSFUL_DEFENSE, VICTORY_BONUS, FAILED_ACTION_PENALTY;
+terminal MAGE_COMBO_POINTS, MAGE_COMBO, WARRIOR_COMBO_POINTS, WARRIOR_COMBO, LOW_HEALTH_VICTORY;
+terminal GET_MOVES_COUNT, GET_LAST_N_MOVES, GET_MOVE, LAST_MOVE;
+terminal String MAGE_ACTION;
+terminal String WARRIOR_ACTION;
+terminal EQ, NEQ, GE, LE, GT, LT;
+terminal AND, OR, NOT;
+terminal LLAVEA, LLAVEC, PARENTESISA, PARENTESISC, CORCHETEA, CORCHETEC, OJOS, COMA;
 terminal Double DECIMAL;
 terminal Integer ENTERO;
 terminal String ID;
 
-/* ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ No Terminales ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
-// No Terminales: reglas que definiremos para la estrucura sintáctica del lenguaje
-
+/* No terminales */
 non terminal programa;
-non terminal lista_estrategias;
-non terminal lista_partidas;
-non terminal estrategia;
-non terminal partida;
-non terminal main;
+non terminal List lista_estrategias;
+non terminal List lista_partidas;
+non terminal Strategy estrategia;
+non terminal Match partida;
+non terminal List main;
+non terminal Action accion_mago;
+non terminal Action accion_guerrero;
+non terminal List reglas_mago;
+non terminal Rule regla_mago;
+non terminal List lista_reglas_mago;
+non terminal List reglas_guerrero;
+non terminal Rule regla_guerrero;
+non terminal List lista_reglas_guerrero;
+non terminal Scoring bloque_scoring;
+non terminal Bonuses bloque_bonuses;
+non terminal List lista_acciones;
+non terminal List lista_run;
+non terminal RunInstruction instruccion_run;
+non terminal List lista_ids;
 
-/* ~ ~ ~ ~ ~ Acciones ~ ~ ~ ~ ~ */
-non terminal accion; /* para accion_mago o accion_guerrero*/
+non terminal Expression expresion;
+non terminal Expression expresion_or;
+non terminal Expression expresion_and;
+non terminal Expression expresion_comparacion;
+non terminal Expression expresion_unaria;
+non terminal Expression expresion_primaria;
+non terminal Expression funcion;
+non terminal String historial;
 
-/* ~ ~ ~ ~ ~ Reglas de Estrategia ~ ~ ~ ~ ~ */
-non terminal reglas_mago;
-non terminal regla_mago;
-non terminal lista_reglas_mago;
-
-non terminal reglas_guerrero;
-non terminal regla_guerrero;
-non terminal lista_reglas_guerrero;
-
-/* ~ ~ ~ ~ ~ Bloques de partida ~ ~ ~ ~ ~ */
-non terminal bloque_scoring;
-non terminal bloque_bonuses;
-
-/* ~ ~ ~ ~ ~ Bloque main ~ ~ ~ ~ ~ */
-non terminal lista_run;
-non terminal instruccion_run;
-non terminal lista_ids;
-
-/* ~ ~ ~ ~ ~ Símbolo inicial ~ ~ ~ ~ ~ */
+/* Las precedencias se declaran después de los símbolos y antes del inicio. */
+precedence left OR;
+precedence left AND;
+precedence nonassoc EQ, NEQ, LT, GT, LE, GE;
+precedence right NOT;
 
 start with programa;
 
+/* Gramática */
 
-/* ~ ~ ~ ~ ~ Gramática principal ~ ~ ~ ~ ~ */
+programa ::= lista_estrategias:le lista_partidas:lp main:m
+             {:
+                 ProgramStore.getInstance().setStrategies(le);
+                 ProgramStore.getInstance().setMatches(lp);
+                 ProgramStore.getInstance().setMain(m);
+             :};
 
-programa ::= lista_estrategias lista_partidas main;
+lista_estrategias ::= estrategia:e
+                      {:
+                          List<Strategy> list = new ArrayList<>();
+                          list.add(e);
+                          RESULT = list;
+                      :}
+                    | lista_estrategias:l estrategia:e
+                      {:
+                          l.add(e);
+                          RESULT = l;
+                      :}
+                    | /* vacío */
+                      {:
+                          RESULT = new ArrayList<>();
+                      :};
 
-lista_estrategias ::= lista_estrategias estrategia | estrategia;
-lista_partidas ::= lista_partidas partida | partida;
+lista_partidas ::= partida:p
+                   {:
+                       List<Match> list = new ArrayList<>();
+                       list.add(p);
+                       RESULT = list;
+                   :}
+                 | lista_partidas:l partida:p
+                   {:
+                       l.add(p);
+                       RESULT = l;
+                   :}
+                 | /* vacío */
+                   {:
+                       RESULT = new ArrayList<>();
+                   :};
 
+estrategia ::= MAGE ID:nombre LLAVEA INITIAL OJOS accion_mago:ini reglas_mago:r LLAVEC
+               {:
+                   Strategy s = new Strategy(nombre, ClassType.MAGE, ini, r);
+                   RESULT = s;
+               :}
+             | WARRIOR ID:nombre LLAVEA INITIAL OJOS accion_guerrero:ini reglas_guerrero:r LLAVEC
+               {:
+                   Strategy s = new Strategy(nombre, ClassType.WARRIOR, ini, r);
+                   RESULT = s;
+               :};
+
+accion_mago ::= MAGE_ACTION:s
+                {:
+                    RESULT = Action.fromString(s);
+                :};
+
+accion_guerrero ::= WARRIOR_ACTION:s
+                    {:
+                        RESULT = Action.fromString(s);
+                    :};
+
+reglas_mago ::= RULES OJOS CORCHETEA lista_reglas_mago:rl ELSE accion_mago:def CORCHETEC
+                {:
+                    rl.add(new ElseRule(def));
+                    RESULT = rl;
+                :};
+
+lista_reglas_mago ::= regla_mago:r
+                      {:
+                          List<Rule> list = new ArrayList<>();
+                          list.add(r);
+                          RESULT = list;
+                      :}
+                    | lista_reglas_mago:l regla_mago:r COMA
+                      {:
+                          l.add(r);
+                          RESULT = l;
+                      :}
+                    | /* vacío */
+                      {:
+                          RESULT = new ArrayList<>();
+                      :};
+
+regla_mago ::= IF expresion:e THEN accion_mago:a
+               {:
+                   RESULT = new IfRule(e, a);
+               :};
+
+reglas_guerrero ::= RULES OJOS CORCHETEA lista_reglas_guerrero:rl ELSE accion_guerrero:def CORCHETEC
+                    {:
+                        rl.add(new ElseRule(def));
+                        RESULT = rl;
+                    :};
+
+lista_reglas_guerrero ::= regla_guerrero:r
+                          {:
+                              List<Rule> list = new ArrayList<>();
+                              list.add(r);
+                              RESULT = list;
+                          :}
+                        | lista_reglas_guerrero:l regla_guerrero:r COMA
+                          {:
+                              l.add(r);
+                              RESULT = l;
+                          :}
+                        | /* vacío */
+                          {:
+                              RESULT = new ArrayList<>();
+                          :};
+
+regla_guerrero ::= IF expresion:e THEN accion_guerrero:a
+                   {:
+                       RESULT = new IfRule(e, a);
+                   :};
+
+partida ::= MATCH ID:nombre LLAVEA
+            PLAYERS OJOS CORCHETEA ID:p1 COMA ID:p2 CORCHETEC COMA
+            ROUNDS OJOS ENTERO:r COMA
+            bloque_scoring:sc
+            bloque_bonuses:bon
+            LLAVEC
+            {:
+                Match m = new Match(nombre, p1, p2, r, sc, bon);
+                RESULT = m;
+            :};
+
+bloque_scoring ::= SCORING OJOS LLAVEA
+                   DAMAGE_POINT OJOS ENTERO:dp COMA
+                   HEALING_POINT OJOS ENTERO:hp COMA
+                   SUCCESSFUL_DEFENSE OJOS ENTERO:sd COMA
+                   VICTORY_BONUS OJOS ENTERO:vb COMA
+                   FAILED_ACTION_PENALTY OJOS ENTERO:fp
+                   LLAVEC
+                   {:
+                       RESULT = new Scoring(dp, hp, sd, vb, fp);
+                   :};
+
+bloque_bonuses ::= BONUSES OJOS LLAVEA
+                   MAGE_COMBO OJOS CORCHETEA lista_acciones:mc CORCHETEC COMA
+                   MAGE_COMBO_POINTS OJOS ENTERO:mcp COMA
+                   WARRIOR_COMBO OJOS CORCHETEA lista_acciones:wc CORCHETEC COMA
+                   WARRIOR_COMBO_POINTS OJOS ENTERO:wcp COMA
+                   LOW_HEALTH_VICTORY OJOS ENTERO:lhv
+                   LLAVEC
+                   {:
+                       RESULT = new Bonuses(mc, mcp, wc, wcp, lhv);
+                   :};
+
+lista_acciones ::= accion_mago:a
+                   {:
+                       List<Action> list = new ArrayList<>();
+                       list.add(a);
+                       RESULT = list;
+                   :}
+                 | lista_acciones:l COMA accion_mago:a
+                   {:
+                       l.add(a);
+                       RESULT = l;
+                   :}
+                 | accion_guerrero:a
+                   {:
+                       List<Action> list = new ArrayList<>();
+                       list.add(a);
+                       RESULT = list;
+                   :}
+                 | lista_acciones:l COMA accion_guerrero:a
+                   {:
+                       l.add(a);
+                       RESULT = l;
+                   :};
+
+main ::= MAIN LLAVEA lista_run:lr LLAVEC
+         {:
+             RESULT = lr;
+         :};
+
+lista_run ::= instruccion_run:ir
+              {:
+                  List<RunInstruction> list = new ArrayList<>();
+                  list.add(ir);
+                  RESULT = list;
+              :}
+            | lista_run:l instruccion_run:ir
+              {:
+                  l.add(ir);
+                  RESULT = l;
+              :}
+            | /* vacío */
+              {:
+                  RESULT = new ArrayList<>();
+              :};
+
+instruccion_run ::= RUN CORCHETEA lista_ids:ids CORCHETEC WITH LLAVEA SEED OJOS ENTERO:seed LLAVEC
+                    {:
+                        RESULT = new RunInstruction(ids, seed);
+                    :};
+
+lista_ids ::= ID:id
+              {:
+                  List<String> list = new ArrayList<>();
+                  list.add(id);
+                  RESULT = list;
+              :}
+            | lista_ids:l COMA ID:id
+              {:
+                  l.add(id);
+                  RESULT = l;
+              :};
+
+/* Expresiones */
+expresion ::= expresion_or:e {: RESULT = e; :};
+expresion_or ::= expresion_or:e1 OR expresion_and:e2 {: RESULT = new BinaryExpression(e1, "||", e2); :}
+              | expresion_and:e {: RESULT = e; :};
+expresion_and ::= expresion_and:e1 AND expresion_comparacion:e2 {: RESULT = new BinaryExpression(e1, "&&", e2); :}
+               | expresion_comparacion:e {: RESULT = e; :};
+expresion_comparacion ::= expresion_unaria:e1 EQ expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, "==", e2); :}
+                       | expresion_unaria:e1 NEQ expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, "!=", e2); :}
+                       | expresion_unaria:e1 LT expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, "<", e2); :}
+                       | expresion_unaria:e1 GT expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, ">", e2); :}
+                       | expresion_unaria:e1 LE expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, "<=", e2); :}
+                       | expresion_unaria:e1 GE expresion_unaria:e2 {: RESULT = new BinaryExpression(e1, ">=", e2); :}
+                       | expresion_unaria:e {: RESULT = e; :};
+expresion_unaria ::= NOT expresion_unaria:e {: RESULT = new UnaryExpression("!", e); :}
+                  | expresion_primaria:e {: RESULT = e; :};
+expresion_primaria ::= ENTERO:i {: RESULT = new ConstantExpression(i); :}
+                    | DECIMAL:d {: RESULT = new ConstantExpression(d); :}
+                    | SELF_HEALTH {: RESULT = new VariableExpression("self_health"); :}
+                    | OPPONENT_HEALTH {: RESULT = new VariableExpression("opponent_health"); :}
+                    | SELF_RESOURCE {: RESULT = new VariableExpression("self_resource"); :}
+                    | OPPONENT_RESOURCE {: RESULT = new VariableExpression("opponent_resource"); :}
+                    | SELF_SCORE {: RESULT = new VariableExpression("self_score"); :}
+                    | OPPONENT_SCORE {: RESULT = new VariableExpression("opponent_score"); :}
+                    | ROUND_NUMBER {: RESULT = new VariableExpression("round_number"); :}
+                    | TOTAL_ROUNDS {: RESULT = new VariableExpression("total_rounds"); :}
+                    | RANDOM {: RESULT = new VariableExpression("random"); :}
+                    | ID:id {: RESULT = new VariableExpression(id); :}
+                    | funcion:f {: RESULT = f; :}
+                    | PARENTESISA expresion:e PARENTESISC {: RESULT = e; :};
+funcion ::= GET_MOVE PARENTESISA historial:h COMA ENTERO:n PARENTESISC
+            {: RESULT = new FunctionCall("get_move", h, n); :}
+          | LAST_MOVE PARENTESISA historial:h PARENTESISC
+            {: RESULT = new FunctionCall("last_move", h); :}
+          | GET_MOVES_COUNT PARENTESISA historial:h COMA accion_mago:a PARENTESISC
+            {: RESULT = new FunctionCall("get_moves_count", h, a); :}
+          | GET_MOVES_COUNT PARENTESISA historial:h COMA accion_guerrero:a PARENTESISC
+            {: RESULT = new FunctionCall("get_moves_count", h, a); :}
+          | GET_LAST_N_MOVES PARENTESISA historial:h COMA ENTERO:n PARENTESISC
+            {: RESULT = new FunctionCall("get_last_n_moves", h, n); :};
+historial ::= SELF_HISTORY {: RESULT = "self"; :}
+           | OPPONENT_HISTORY {: RESULT = "opponent"; :};
