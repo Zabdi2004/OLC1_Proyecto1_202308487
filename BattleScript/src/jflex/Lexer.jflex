@@ -4,6 +4,7 @@ import java_cup.runtime.Symbol;
 import java.util.ArrayList;
 import java.util.List;
 import analyzer.Error;
+import analyzer.TokenInfo;
 
 %%
 
@@ -17,6 +18,7 @@ import analyzer.Error;
 
 %{
     private static List<Error> lexicalErrors = new ArrayList<>();
+    private static List<TokenInfo> tokens = new ArrayList<>();
     
     public static List<Error> getLexicalErrors() {
         return lexicalErrors;
@@ -24,13 +26,17 @@ import analyzer.Error;
     
     public static void clearErrors() {
         lexicalErrors.clear();
+        tokens.clear();
     }
+    public static List<TokenInfo> getTokens() { return new ArrayList<>(tokens); }
     
     private Symbol symbol(int type) {
+        tokens.add(new TokenInfo(sym.terminalNames[type], yytext(), yyline + 1, yycolumn + 1));
         return new Symbol(type, yyline + 1, yycolumn + 1);
     }
     
     private Symbol symbol(int type, Object value) {
+        tokens.add(new TokenInfo(sym.terminalNames[type], yytext(), yyline + 1, yycolumn + 1));
         return new Symbol(type, yyline + 1, yycolumn + 1, value);
     }
     

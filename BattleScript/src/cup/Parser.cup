@@ -35,6 +35,16 @@ parser code {:
             errors.add(new Error("Sintáctico", message, 0, 0));
         }
     }
+
+    @Override
+    public void syntax_error(Symbol currentToken) {
+        report_error("Token inesperado durante el análisis", currentToken);
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol currentToken) throws Exception {
+        report_error("No fue posible recuperar el análisis desde este token", currentToken);
+    }
 :};
 
 scan with {:

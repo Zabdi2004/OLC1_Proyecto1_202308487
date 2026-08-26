@@ -405,6 +405,16 @@ public class Parser extends java_cup.runtime.lr_parser {
         }
     }
 
+    @Override
+    public void syntax_error(Symbol currentToken) {
+        report_error("Token inesperado durante el análisis", currentToken);
+    }
+
+    @Override
+    public void unrecovered_syntax_error(Symbol currentToken) throws Exception {
+        report_error("No fue posible recuperar el análisis desde este token", currentToken);
+    }
+
 
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
