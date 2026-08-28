@@ -1165,7 +1165,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             zzDoEOF();
             switch (zzLexicalState) {
             case COMMENT: {
-              addLexicalError("Comentario multilínea sin cerrar"); return symbol(sym.EOF);
+              addLexicalError("Comentario multilínea sin cerrar (se esperaba '*/' antes de fin de archivo)"); return symbol(sym.EOF);
             }  // fall though
             case 425: break;
             default:
@@ -1175,7 +1175,7 @@ public class Lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { addLexicalError("Carácter no reconocido: '" + yytext() + "'");
+            { addLexicalError("Token no reconocido (token: '" + yytext() + "' tipo: Léxico)");
             }
           // fall through
           case 68: break;

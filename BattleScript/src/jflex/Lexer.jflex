@@ -140,7 +140,7 @@ WHITESPACE = [ \t\r\n]+
     {ID}      { return symbol(sym.ID, yytext()); }
 
     [^] {
-        addLexicalError("Carácter no reconocido: '" + yytext() + "'");
+        addLexicalError("Token no reconocido (token: '" + yytext() + "' tipo: Léxico)");
     }
 }
 
@@ -151,5 +151,5 @@ WHITESPACE = [ \t\r\n]+
     \r\n      { /* ignorar */ }
     \n        { /* ignorar */ }
     \r        { /* ignorar */ }
-    <<EOF>>   { addLexicalError("Comentario multilínea sin cerrar"); return symbol(sym.EOF); }
+    <<EOF>>   { addLexicalError("Comentario multilínea sin cerrar (se esperaba '*/' antes de fin de archivo)"); return symbol(sym.EOF); }
 }

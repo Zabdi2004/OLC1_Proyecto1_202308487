@@ -17,6 +17,7 @@ public final class SourceAnalyzer {
         try { 
             Parser parser = new Parser(new Lexer(new StringReader(source == null ? "" : source))); 
             parser.parse(); errors.addAll(parser.getErrors()); 
+            
         }
         catch (Exception exception) { 
             errors.add(new Error("Sintáctico", exception.getMessage() == null ? "No fue posible analizar la entrada" : exception.getMessage(), 0, 0)); }

@@ -27,23 +27,31 @@ public final class InterfazController {
         view.onOpen(event -> open());
         view.onSave(event -> save());
         view.onRun(event -> run());
+        
+        view.onMenuNew(event -> createNew());
+        view.onMenuOpen(event -> open());
+        view.onMenuSave(event -> save());
+        view.onMenuExit(event -> System.exit(0));
     }
 
-    private void createNew() { 
+    public void createNew() { 
         currentFile = null; view.setSourceText(""); 
         view.showTokens(java.util.Collections.emptyList()); 
-        view.showErrors(java.util.Collections.emptyList()); }
+        view.showErrors(java.util.Collections.emptyList()); 
+        view.setStatus("Nuevo archivo creado.");
+    }
     
-    private void open() {
+    public void open() {
         JFileChooser chooser = chooser();
         if (chooser.showOpenDialog(view) != JFileChooser.APPROVE_OPTION) return;
         currentFile = chooser.getSelectedFile().toPath();
+        view.setStatus("Archivo abierto: " + currentFile.getFileName());
         try { 
             view.setSourceText(new String(Files.readAllBytes(currentFile), StandardCharsets.UTF_8)); }
         catch (IOException exception) { 
             showError("No se pudo abrir el archivo: " + exception.getMessage()); }
     }
-    private void save() {
+    public void save() {
         if (currentFile == null) { 
             JFileChooser chooser = chooser(); 
             if (chooser.showSaveDialog(view) != JFileChooser.APPROVE_OPTION)
@@ -53,23 +61,31 @@ public final class InterfazController {
             if (!currentFile.toString().endsWith(".btl")) currentFile = Path.of(currentFile.toString() + ".btl"); 
         }
         try { 
-            Files.write(currentFile, view.getSourceText().getBytes(StandardCharsets.UTF_8)); }
+            Files.write(currentFile, view.getSourceText().getBytes(StandardCharsets.UTF_8)); 
+            view.setStatus("Archivo guardado: " + currentFile.getFileName());
+        }
         catch (IOException exception) { 
             showError("No se pudo guardar el archivo: " + exception.getMessage()); }
     }
+    
     private void run() {
         AnalysisResult result = analyzer.analyze(view.getSourceText());
         view.showTokens(result.getTokens()); 
         view.showErrors(result.getErrors());
         if (!result.isSuccessful()) { 
             JOptionPane.showMessageDialog(view, "Se encontraron errores. Revisa la pestaña Errores.", "Análisis detenido", JOptionPane.WARNING_MESSAGE); 
-            return; }
+            return; 
+        }
+        
         try { 
-            List<BattleResult> results = new ProgramExecutor().execute(result.getProgram()); 
-            JOptionPane.showMessageDialog(view, format(results), "Ejecución completada", JOptionPane.INFORMATION_MESSAGE); }
-        catch (RuntimeException exception) { 
-            showError("Error de ejecución: " + exception.getMessage()); }
+            List<BattleResult> results = new ProgramExecutor().execute(result.getProgram());
+            JOptionPane.showMessageDialog(view, format(results), "Ejecución completada", JOptionPane.INFORMATION_MESSAGE);
+            view.showResults(results);
+        } catch (RuntimeException exception) { 
+            showError("Error de ejecución: " + exception.getMessage()); 
+        }
     }
+    
     private JFileChooser chooser() { 
         JFileChooser chooser = new JFileChooser(); 
         chooser.setFileFilter(new FileNameExtensionFilter("BattleScript (*.btl)", "btl")); 

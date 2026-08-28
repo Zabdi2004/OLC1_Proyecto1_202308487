@@ -399,7 +399,16 @@ public class Parser extends java_cup.runtime.lr_parser {
     public void report_error(String message, Object info) {
         if (info instanceof Symbol) {
             Symbol s = (Symbol) info;
-            errors.add(new Error("Sintáctico", message, s.left, s.right));
+            // Obtener el lexema del token
+            String tokenValue = (s.value != null) ? s.value.toString() : "''";
+            // Obtener el nombre del tipo de token (usando sym.terminalNames)
+            String tokenType = "DESCONOCIDO";
+            if (s.sym >= 0 && s.sym < sym.terminalNames.length) {
+                tokenType = sym.terminalNames[s.sym];
+            }
+            // Construir mensaje con el token y su tipo
+            String fullMessage = message + " (token: '" + tokenValue + "' tipo: " + tokenType + ")";
+            errors.add(new Error("Sintáctico", fullMessage, s.left, s.right));
         } else {
             errors.add(new Error("Sintáctico", message, 0, 0));
         }
