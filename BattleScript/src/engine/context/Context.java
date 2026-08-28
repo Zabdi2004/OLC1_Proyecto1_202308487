@@ -1,50 +1,50 @@
 package engine.context;
 
 import battlescript.model.Action;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-/** Valores disponibles mientras se evalúa una condición de una estrategia. */
-public final class Context {
-    private int selfHealth, 
-            opponentHealth, 
-            selfResource, 
-            opponentResource, 
-            selfScore, 
-            opponentScore, 
-            roundNumber, 
-            totalRounds;
+public class Context {
+    private int selfHealth;
+    private int opponentHealth;
+    private int selfResource;
+    private int opponentResource;
+    private int selfScore;
+    private int opponentScore;
+    private int roundNumber;
+    private int totalRounds;
     private double random;
-    private List<Action> selfHistory = new ArrayList<Action>();
-    private List<Action> opponentHistory = new ArrayList<Action>();
+    private List<Action> selfHistory;
+    private List<Action> opponentHistory;
 
-    public Context() { }
-    public int getSelfHealth() { return selfHealth; } 
-    public void setSelfHealth(int value) { selfHealth = value; }
-    public int getOpponentHealth() { return opponentHealth; } 
-    public void setOpponentHealth(int value) { opponentHealth = value; }
-    public int getSelfResource() { return selfResource; } 
-    public void setSelfResource(int value) { selfResource = value; }
-    public int getOpponentResource() { return opponentResource; } 
-    public void setOpponentResource(int value) { opponentResource = value; }
-    public int getSelfScore() { return selfScore; }
-    public void setSelfScore(int value) { selfScore = value; }
-    public int getOpponentScore() { return opponentScore; } 
-    public void setOpponentScore(int value) { opponentScore = value; }
-    public int getRoundNumber() { return roundNumber; } 
-    public void setRoundNumber(int value) { roundNumber = value; }
-    public int getTotalRounds() { return totalRounds; } 
-    public void setTotalRounds(int value) { totalRounds = value; }
-    public double getRandom() { return random; } 
-    public void setRandom(double value) { random = value; }
-    public List<Action> getSelfHistory() { return Collections.unmodifiableList(selfHistory); }
-    public void setSelfHistory(List<Action> value) { selfHistory = new ArrayList<Action>(value); }
-    public List<Action> getOpponentHistory() { return Collections.unmodifiableList(opponentHistory); }
-    public void setOpponentHistory(List<Action> value) { opponentHistory = new ArrayList<Action>(value); }
-    public List<Action> history(String owner) {
-        if ("self".equals(owner)) return getSelfHistory();
-        if ("opponent".equals(owner)) return getOpponentHistory();
-        throw new IllegalArgumentException("Historial desconocido: " + owner);
+    // Getters y setters...
+
+    public List<Action> history(String name) {
+        if ("self_history".equals(name)) return selfHistory;
+        if ("opponent_history".equals(name)) return opponentHistory;
+        throw new IllegalArgumentException("Historial desconocido: " + name);
     }
+
+    // Resto de getters/setters (puedes generarlos con tu IDE)
+    public int getSelfHealth() { return selfHealth; }
+    public void setSelfHealth(int selfHealth) { this.selfHealth = selfHealth; }
+    public int getOpponentHealth() { return opponentHealth; }
+    public void setOpponentHealth(int opponentHealth) { this.opponentHealth = opponentHealth; }
+    public int getSelfResource() { return selfResource; }
+    public void setSelfResource(int selfResource) { this.selfResource = selfResource; }
+    public int getOpponentResource() { return opponentResource; }
+    public void setOpponentResource(int opponentResource) { this.opponentResource = opponentResource; }
+    public int getSelfScore() { return selfScore; }
+    public void setSelfScore(int selfScore) { this.selfScore = selfScore; }
+    public int getOpponentScore() { return opponentScore; }
+    public void setOpponentScore(int opponentScore) { this.opponentScore = opponentScore; }
+    public int getRoundNumber() { return roundNumber; }
+    public void setRoundNumber(int roundNumber) { this.roundNumber = roundNumber; }
+    public int getTotalRounds() { return totalRounds; }
+    public void setTotalRounds(int totalRounds) { this.totalRounds = totalRounds; }
+    public double getRandom() { return random; }
+    public void setRandom(double random) { this.random = random; }
+    public List<Action> getSelfHistory() { return selfHistory; }
+    public void setSelfHistory(List<Action> selfHistory) { this.selfHistory = selfHistory; }
+    public List<Action> getOpponentHistory() { return opponentHistory; }
+    public void setOpponentHistory(List<Action> opponentHistory) { this.opponentHistory = opponentHistory; }
 }

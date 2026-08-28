@@ -6,27 +6,28 @@ import java.util.*;
 
 public final class SemanticValidator {
     public List<Error> validate(ProgramStore program) {
-        List<Error> errors = new ArrayList<Error>(); 
-        Set<String> strategies = new HashSet<String>(); 
-        Set<String> matches = new HashSet<String>();
+        List<Error> errors = new ArrayList<>();
+        Set<String> strategies = new HashSet<>();
+        Set<String> matches = new HashSet<>();
         
         for (Strategy s : program.getStrategies()) { 
-            if (!strategies.add(s.getName())){ 
-                error(errors,"Estrategia duplicada: "+s.getName());
+            if (!strategies.add(s.getName())) { 
+                error(errors, "Estrategia duplicada: " + s.getName());
             } 
         }
         for (Match m : program.getMatches()) {
             if (!matches.add(m.getName())) {
-                error(errors,"Partida duplicada: "+m.getName());
+                error(errors, "Partida duplicada: " + m.getName());
             } 
             if (!strategies.contains(m.getPlayerOne()) || !strategies.contains(m.getPlayerTwo())) {
-                error(errors,"La partida "+m.getName()+" referencia jugadores inexistentes");
+                error(errors, "La partida " + m.getName() + " referencia jugadores inexistentes");
             }
         }
-        for (RunInstruction run : program.getMain()){ 
-            for (String id : run.getMatchIds()){ 
-                if (!matches.contains(id)){ 
-                    error(errors,"La instrucción run referencia una partida inexistente: "+id);
+        // Cambio aquí: usar getMainBlock().getRunInstructions()
+        for (RunInstruction run : program.getMainBlock().getRunInstructions()) {
+            for (String id : run.getMatchIds()) {
+                if (!matches.contains(id)) {
+                    error(errors, "La instrucción run referencia una partida inexistente: " + id);
                 }
             }
         }

@@ -1,130 +1,199 @@
 package engine.battle;
 
-import battlescript.model.*; 
-import engine.context.Context; 
+import battlescript.model.*;
+import engine.context.Context;
+import engine.expressions.Expression;
+import engine.rules.ElseRule;
+import engine.rules.IfRule;
+import engine.rules.Rule;
+
 import java.util.*;
 
-public final class BattleEngine {
-    public BattleResult run(Match match, Strategy first, Strategy second, int seed) {
-        Fighter a=new Fighter(first), 
-                b=new Fighter(second); 
-        Random ra=new Random(seed), 
-                rb=new Random(seed+1L); 
-        List<String> log=new ArrayList<String>(); 
-        int completed=0;
-        for (int round=0; round<match.getRounds() && a.alive() && b.alive(); round++) {
-            completed=round+1; 
-            Action aa=a.strategy.selectAction(context(a,b,round,match.getRounds(),
-                    round==0?0:ra.nextDouble())); 
-            Action ab=b.strategy.selectAction(context(b,a,round,match.getRounds(),
-                    round==0?0:rb.nextDouble())); 
-            executePair(a,aa,b,ab,match,log); 
-        }
-        String winner=winner(a,b); 
-        if (!"Empate".equals(winner)) { 
-            Fighter f=winner.equals(a.strategy.getName())?a:b;
-            f.score+=match.getScoring().getVictoryBonus(); 
-            if(f.health*4<=f.maxHealth) {
-                f.score+=match.getBonuses().getLowHealthVictory();
-            } 
-        }
-        log.add("Resultado: "+winner); 
-        return new BattleResult(match.getName(),winner,completed,log);
-    }
-    private Context context(Fighter self,Fighter other,int round,int total,double random) { 
-        Context c=new Context(); 
-        c.setSelfHealth(self.health);
-        c.setOpponentHealth(other.health);
-        c.setSelfResource(self.resource);
-        c.setOpponentResource(other.resource);
-        c.setSelfScore(self.score);
-        c.setOpponentScore(other.score);
-        c.setRoundNumber(round);
-        c.setTotalRounds(total);
-        c.setRandom(random);
-        c.setSelfHistory(self.history);
-        c.setOpponentHistory(other.history);
-        return c; 
-    }
-    private void executePair(Fighter a,Action aa,Fighter b,Action ab,Match match,List<String> log) { 
-        boolean first=aa.getPriority()>ab.getPriority() || (aa.getPriority()==ab.getPriority() && a.speed>=b.speed); 
-        if(first){
-            execute(a,aa,b,match,log);
-            if(b.alive())execute(b,ab,a,match,log);
-        }
-        else{
-            execute(b,ab,a,match,log);
-            if(a.alive())execute(a,aa,b,match,log);
-        } 
-        a.defending=false;
-        b.defending=false; 
-    }
-    private void execute(Fighter self,Action action,Fighter other,Match match,List<String> log) { 
-        if(self.resource<action.getResourceCost()){
-            self.score=Math.max(0,self.score-match.getScoring().getFailedActionPenalty());
-            log.add(self.strategy.getName()+": acción fallida "+action);return;
-        } 
-        self.resource-=action.getResourceCost(); 
-        self.history.add(action); 
-        if(action.isDefense()){
-            self.defending=true;
-        } else if(action==Action.WAR_CRY){
-            self.warCry=true;
-        } 
-        else if(action.isHealing()){
-            int gained=Math.min(25,self.maxHealth-self.health);
-            self.health+=gained;
-            self.score+=gained*match.getScoring().getHealingPoint();
-        } 
-        else if(action.isRecovery()){
-            self.resource=Math.min(self.maxResource,self.resource+25);
-        }
-        else if(action.isOffensive()){
-            int damage=action.getPower()
-                    +(action.getOwner()==ClassType.MAGE?self.magicPower:self.physicalAttack)
-                    +(self.warCry?10:0)
-                    -(action.getOwner()==ClassType.MAGE?other.magicResistance:other.armor);
-            self.warCry=false;
-            damage=Math.max(1,damage);
-            if(other.defending){
-                damage=(int)Math.floor(damage*.5);
-                if(damage>0){
-                    other.score+=match.getScoring().getSuccessfulDefense();
+public class BattleEngine {
+
+    public BattleResult run(Match match, Strategy p1, Strategy p2, int seed) {
+        Fighter f1 = new Fighter(p1);
+        Fighter f2 = new Fighter(p2);
+
+        Random r1 = new Random(seed);
+        Random r2 = new Random(seed + 1L);
+
+        int rounds = match.getRounds();
+        List<String> log = new ArrayList<>();
+
+        for (int round = 0; round < rounds && f1.isAlive() && f2.isAlive(); round++) {
+            // Crear contexto
+            Context ctx1 = buildContext(f1, f2, round, rounds, r1.nextDouble());
+            Context ctx2 = buildContext(f2, f1, round, rounds, r2.nextDouble());
+
+            // Seleccionar acciones
+            Action action1 = selectAction(p1, ctx1);
+            Action action2 = selectAction(p2, ctx2);
+
+            // Determinar orden
+            boolean firstActsFirst = getPriority(action1) > getPriority(action2) ||
+                    (getPriority(action1) == getPriority(action2) && f1.getSpeed() >= f2.getSpeed());
+
+            // Ejecutar en orden
+            if (firstActsFirst) {
+                executeAction(f1, f2, action1, match, log);
+                if (f2.isAlive()) {
+                    executeAction(f2, f1, action2, match, log);
+                }
+            } else {
+                executeAction(f2, f1, action2, match, log);
+                if (f1.isAlive()) {
+                    executeAction(f1, f2, action1, match, log);
                 }
             }
-            other.health=Math.max(0,other.health-damage);
-            self.score+=damage*match.getScoring().getDamagePoint();
-        } 
-        awardCombo(self,match);
-        log.add(self.strategy.getName()+" usa "+action); 
+
+            // Resetear defensas y war cry
+            f1.setDefending(false);
+            f2.setDefending(false);
+            f1.setWarCryBonus(false);
+            f2.setWarCryBonus(false);
+
+            // Verificar combos
+            checkCombo(f1, match.getBonuses());
+            checkCombo(f2, match.getBonuses());
+        }
+
+        String winner = determineWinner(f1, f2);
+        return new BattleResult(match.getName(), winner, rounds, String.join("\n", log));
     }
-    
-    private void awardCombo(Fighter f,Match m){
-        List<Action> combo=f.strategy.getClassType()==ClassType.MAGE? m.getBonuses().getMageCombo(): m.getBonuses().getWarriorCombo();
-        if(!combo.isEmpty()&&f.history.size()>=combo.size()&&f.history.subList(f.history.size()
-                -combo.size(),f.history.size()).equals(combo)){
-            f.score+=f.strategy.getClassType()==ClassType.MAGE? m.getBonuses().getMageComboPoints() : m.getBonuses().getWarriorComboPoints();
+
+    private Context buildContext(Fighter self, Fighter other, int round, int totalRounds, double random) {
+        Context ctx = new Context();
+        ctx.setSelfHealth(self.getHealth());
+        ctx.setOpponentHealth(other.getHealth());
+        ctx.setSelfResource(self.getResource());
+        ctx.setOpponentResource(other.getResource());
+        ctx.setSelfScore(self.getScore());
+        ctx.setOpponentScore(other.getScore());
+        ctx.setRoundNumber(round);
+        ctx.setTotalRounds(totalRounds);
+        ctx.setRandom(random);
+        ctx.setSelfHistory(self.getHistory());
+        ctx.setOpponentHistory(other.getHistory());
+        return ctx;
+    }
+
+    private Action selectAction(Strategy strategy, Context ctx) {
+        for (Rule rule : strategy.getRules()) {
+            if (rule instanceof IfRule) {
+                IfRule ifRule = (IfRule) rule;
+                Expression cond = ifRule.getCondition();
+                if (cond != null && Boolean.TRUE.equals(cond.evaluate(ctx))) {
+                    return ifRule.getAction();
+                }
+            } else if (rule instanceof ElseRule) {
+                return ((ElseRule) rule).getAction();
+            }
+        }
+        return strategy.getInitialAction();
+    }
+
+    private int getPriority(Action action) {
+        return action.getPriority();
+    }
+
+    private void executeAction(Fighter self, Fighter other, Action action, Match match, List<String> log) {
+        Scoring scoring = match.getScoring();
+
+        // Verificar recursos
+        if (!self.canPay(action.getResourceCost())) {
+            self.addScore(-scoring.getFailedActionPenalty());
+            log.add(self.getStrategy().getName() + " no tiene recursos para " + action);
+            return;
+        }
+        self.payResource(action.getResourceCost());
+
+        // Ejecutar según tipo
+        if (action.isOffensive()) {
+            int damage = calculateDamage(self, other, action);
+            if (other.isDefending()) {
+                damage = (int) Math.floor(damage * 0.5);
+                other.addScore(scoring.getSuccessfulDefense());
+            }
+            other.applyDamage(damage);
+            self.addScore(damage * scoring.getDamagePoint());
+            log.add(self.getStrategy().getName() + " usa " + action + " causando " + damage + " daño");
+        } else if (action.isDefense()) {
+            self.setDefending(true);
+            log.add(self.getStrategy().getName() + " se defiende");
+        } else if (action.isHealing()) {
+            int healed = Math.min(action.getPower(), self.getMaxHealth() - self.getHealth());
+            self.heal(healed);
+            self.addScore(healed * scoring.getHealingPoint());
+            log.add(self.getStrategy().getName() + " se cura " + healed + " HP");
+        } else if (action.isRecovery()) {
+            self.recoverResource(action.getPower());
+            log.add(self.getStrategy().getName() + " recupera " + action.getPower() + " de recurso");
+        } else if (action == Action.WAR_CRY) {
+            self.setWarCryBonus(true);
+            log.add(self.getStrategy().getName() + " usa Grito de Guerra");
+        }
+
+        self.addToHistory(action);
+
+        // Bonus por victoria inmediata
+        if (!other.isAlive()) {
+            self.addScore(scoring.getVictoryBonus());
+            log.add(self.getStrategy().getName() + " ha derrotado a " + other.getStrategy().getName());
         }
     }
-    private String winner(Fighter a,Fighter b){
-        if(!a.alive()&&!b.alive()){
-            return "Empate";
+
+    private int calculateDamage(Fighter attacker, Fighter other, Action action) {
+        int base = action.getPower();
+        int attackBonus = 0;
+        if (attacker.hasWarCryBonus()) {
+            attackBonus = 10;
         }
-        if(!a.alive()){
-            return b.strategy.getName();
+
+        if (attacker.getStrategy().getClassType() == ClassType.MAGE) {
+            int damage = base + attacker.getMagicPower() - other.getMagicResistance() + attackBonus;
+            return Math.max(1, damage);
+        } else { // Guerrero
+            int damage = base + attacker.getPhysicalAttack() - other.getArmor() + attackBonus;
+            return Math.max(1, damage);
         }
-        if(!b.alive()){
-            return a.strategy.getName();
+    }
+
+    private void checkCombo(Fighter fighter, Bonuses bonuses) {
+        List<Action> history = fighter.getHistory();
+        if (history.size() < 3) return;
+
+        List<Action> lastThree = history.subList(history.size() - 3, history.size());
+        ClassType type = fighter.getStrategy().getClassType();
+
+        if (type == ClassType.MAGE && bonuses.getMageCombo() != null) {
+            if (lastThree.equals(bonuses.getMageCombo())) {
+                fighter.addScore(bonuses.getMageComboPoints());
+            }
+        } else if (type == ClassType.WARRIOR && bonuses.getWarriorCombo() != null) {
+            if (lastThree.equals(bonuses.getWarriorCombo())) {
+                fighter.addScore(bonuses.getWarriorComboPoints());
+            }
         }
-        if(a.score!=b.score){
-            return a.score>b.score?a.strategy.getName():b.strategy.getName();
-        }
-        if(a.health!=b.health){
-            return a.health>b.health?a.strategy.getName():b.strategy.getName();
-        }
-        if(a.resource!=b.resource){
-            return a.resource>b.resource?a.strategy.getName():b.strategy.getName();
-        }
+    }
+
+    private String determineWinner(Fighter f1, Fighter f2) {
+        if (!f1.isAlive() && !f2.isAlive()) return "Empate por muerte simultánea";
+        if (!f1.isAlive()) return f2.getStrategy().getName();
+        if (!f2.isAlive()) return f1.getStrategy().getName();
+
+        // Por puntuación
+        if (f1.getScore() > f2.getScore()) return f1.getStrategy().getName();
+        if (f2.getScore() > f1.getScore()) return f2.getStrategy().getName();
+
+        // Por vida
+        if (f1.getHealth() > f2.getHealth()) return f1.getStrategy().getName();
+        if (f2.getHealth() > f1.getHealth()) return f2.getStrategy().getName();
+
+        // Por recurso
+        if (f1.getResource() > f2.getResource()) return f1.getStrategy().getName();
+        if (f2.getResource() > f1.getResource()) return f2.getStrategy().getName();
+
         return "Empate";
     }
 }

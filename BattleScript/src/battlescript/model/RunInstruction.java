@@ -7,15 +7,20 @@ import java.util.List;
 public final class RunInstruction {
     private final List<String> matchIds;
     private final int seed;
-    public RunInstruction(List matchIds, int seed) {
+
+    public RunInstruction(List<String> matchIds, int seed) {
         if (matchIds == null || matchIds.isEmpty() || seed <= 0) {
             throw new IllegalArgumentException("La instrucción run requiere partidas y una semilla positiva");
         }
-        this.matchIds = new ArrayList<String>(matchIds); 
+        this.matchIds = new ArrayList<>(matchIds);
         this.seed = seed;
     }
-    public List<String> getMatchIds() { 
-        return Collections.unmodifiableList(matchIds); 
+
+    public List<String> getMatchIds() {
+        return Collections.unmodifiableList(matchIds);
     }
-    public int getSeed() { return seed; }
+
+    public int getSeed() {
+        return seed;
+    }
 }

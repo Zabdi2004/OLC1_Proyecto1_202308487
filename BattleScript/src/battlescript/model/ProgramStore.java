@@ -1,37 +1,80 @@
 package battlescript.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-/** Resultado del análisis sintáctico actual. Se reinicia para cada archivo analizado. */
 public final class ProgramStore {
+    private final Map<String, Strategy> strategies = new HashMap<>();
+    private final Map<String, Match> matches = new HashMap<>();
+    private MainBlock mainBlock = new MainBlock();
+
     private static final ProgramStore INSTANCE = new ProgramStore();
-    private List<Strategy> strategies = new ArrayList<Strategy>();
-    private List<Match> matches = new ArrayList<Match>();
-    private List<RunInstruction> main = new ArrayList<RunInstruction>();
-    
-    private ProgramStore() { }
-    public static ProgramStore getInstance() { return INSTANCE; }
-    
-    public void clear() { strategies.clear(); matches.clear(); main.clear(); }
-    
-    public void setStrategies(List strategies) { 
-        this.strategies = new ArrayList<Strategy>(strategies); 
+
+    private ProgramStore() {}
+
+    public static ProgramStore getInstance() {
+        return INSTANCE;
     }
-    public void setMatches(List matches) { 
-        this.matches = new ArrayList<Match>(matches); 
+
+    public void clear() {
+        strategies.clear();
+        matches.clear();
+        mainBlock = new MainBlock();
     }
-    public void setMain(List main) { 
-        this.main = new ArrayList<RunInstruction>(main); 
+
+    // ─── Métodos que usa el Parser ───
+    public void setStrategies(List<Strategy> list) {
+        strategies.clear();
+        for (Strategy s : list) {
+            strategies.put(s.getName(), s);
+        }
     }
-    public List<Strategy> getStrategies() { 
-        return Collections.unmodifiableList(strategies); 
+
+    public void setMatches(List<Match> list) {
+        matches.clear();
+        for (Match m : list) {
+            matches.put(m.getName(), m);
+        }
     }
-    public List<Match> getMatches() { 
-        return Collections.unmodifiableList(matches); 
+
+    public void setMain(List<RunInstruction> list) {
+        mainBlock = new MainBlock(list);
     }
-    public List<RunInstruction> getMain() { 
-        return Collections.unmodifiableList(main); 
+
+    // ─── Métodos de agregado individual ───
+    public void addStrategy(Strategy s) {
+        strategies.put(s.getName(), s);
+    }
+
+    public void addMatch(Match m) {
+        matches.put(m.getName(), m);
+    }
+
+    public void addRunInstruction(RunInstruction ri) {
+        mainBlock.addRunInstruction(ri);
+    }
+
+    // ─── Getters ───
+    public Strategy getStrategy(String name) {
+        return strategies.get(name);
+    }
+
+    public Match getMatch(String name) {
+        return matches.get(name);
+    }
+
+    public List<Strategy> getStrategies() {
+        return new ArrayList<>(strategies.values());
+    }
+
+    public List<Match> getMatches() {
+        return new ArrayList<>(matches.values());
+    }
+
+    public MainBlock getMainBlock() {
+        return mainBlock;
+    }
+
+    public List<RunInstruction> getMain() {
+        return mainBlock.getRunInstructions();
     }
 }

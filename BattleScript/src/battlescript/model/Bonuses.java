@@ -4,19 +4,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class Bonuses {
-    private final List<Action> mageCombo, warriorCombo;
-    private final int mageComboPoints, warriorComboPoints, lowHealthVictory;
-    public Bonuses(List mageCombo, int mageComboPoints, List warriorCombo, int warriorComboPoints, int lowHealthVictory) {
-        if (mageComboPoints < 0 || warriorComboPoints < 0 || lowHealthVictory < 0){
-            throw new IllegalArgumentException("Bonificaciones inválidas");
-        }
-        this.mageCombo = new ArrayList<Action>(mageCombo); 
+public class Bonuses {
+    private final List<Action> mageCombo;
+    private final int mageComboPoints;
+    private final List<Action> warriorCombo;
+    private final int warriorComboPoints;
+    private final int lowHealthVictory;
+
+    // Constructor que usa el Parser
+    public Bonuses(List<Action> mageCombo, int mageComboPoints, List<Action> warriorCombo, int warriorComboPoints, int lowHealthVictory) {
+        this.mageCombo = (mageCombo == null) ? new ArrayList<>() : new ArrayList<>(mageCombo);
         this.mageComboPoints = mageComboPoints;
-        this.warriorCombo = new ArrayList<Action>(warriorCombo); 
+        this.warriorCombo = (warriorCombo == null) ? new ArrayList<>() : new ArrayList<>(warriorCombo);
         this.warriorComboPoints = warriorComboPoints;
         this.lowHealthVictory = lowHealthVictory;
     }
+
+    // Constructor por defecto (para el parser si no encuentra)
+    public Bonuses() {
+        this(new ArrayList<>(), 0, new ArrayList<>(), 0, 0);
+    }
+
     public List<Action> getMageCombo() { return Collections.unmodifiableList(mageCombo); }
     public int getMageComboPoints() { return mageComboPoints; }
     public List<Action> getWarriorCombo() { return Collections.unmodifiableList(warriorCombo); }

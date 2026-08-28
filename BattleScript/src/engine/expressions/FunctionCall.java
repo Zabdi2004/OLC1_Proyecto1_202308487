@@ -2,49 +2,57 @@ package engine.expressions;
 
 import battlescript.model.Action;
 import engine.context.Context;
-import java.util.ArrayList;
 import java.util.List;
 
-public final class FunctionCall implements Expression {
-    private final String name, history; 
-    private final Object argument;
-    public FunctionCall(String name, String history) { 
-        this(name, history, null); }
-    public FunctionCall(String name, String history, int argument) { 
-        this(name, history, Integer.valueOf(argument)); }
-    public FunctionCall(String name, String history, Action argument) { 
-        this(name, history, (Object) argument); }
-    private FunctionCall(String name, String history, Object argument) { 
-        this.name = name; this.history = history; this.argument = argument; }
-    
-    @Override public Object evaluate(Context context) {
-        List<Action> values = context.history(history);
-        if ("last_move".equals(name)) { 
-            if (values.isEmpty()) {
-                throw new IllegalStateException("El historial está vacío");} 
-            return values.get(values.size() - 1); 
+public class FunctionCall implements Expression {
+    private final String name;
+    private final String historyName;
+    private final Object argument; // puede ser Integer o Action o null
+
+    // Constructor para funciones con argumento (get_move, get_moves_count, get_last_n_moves)
+    public FunctionCall(String name, String historyName, Object argument) {
+        this.name = name;
+        this.historyName = historyName;
+        this.argument = argument;
+    }
+
+    // Constructor para last_move (sin argumento)
+    public FunctionCall(String name, String historyName) {
+        this(name, historyName, null);
+    }
+
+    @Override
+    public Object evaluate(Context context) {
+        List<Action> history = context.history(historyName);
+
+        switch (name) {
+            case "last_move":
+                if (history.isEmpty()) {
+                    throw new RuntimeException("Historial vacío en last_move");
+                }
+                return history.get(history.size() - 1);
+
+            case "get_move":
+                int index = (Integer) argument;
+                if (index < 0 || index >= history.size()) {
+                    throw new RuntimeException("Índice fuera de rango en get_move");
+                }
+                return history.get(index);
+
+            case "get_moves_count":
+                Action action = (Action) argument;
+                long count = history.stream().filter(a -> a == action).count();
+                return (int) count;
+
+            case "get_last_n_moves":
+                int n = (Integer) argument;
+                if (n <= 0 || n > history.size()) {
+                    throw new RuntimeException("n inválido en get_last_n_moves");
+                }
+                return history.subList(history.size() - n, history.size());
+
+            default:
+                throw new RuntimeException("Función desconocida: " + name);
         }
-        if ("get_move".equals(name)) { 
-            int index = (Integer) argument; 
-            if (index < 0 || index >= values.size()) {
-                throw new IllegalStateException("Índice de historial inválido");} 
-            return values.get(index); 
-        }
-        if ("get_moves_count".equals(name)) { 
-            int count = 0; 
-            for (Action value : values){
-                if (value == argument) count++;
-            } 
-            return count; 
-        }
-        if ("get_last_n_moves".equals(name)) { 
-            int count = (Integer) argument; 
-            if (count <= 0 || count > values.size()) {
-                throw new IllegalStateException("Cantidad de movimientos inválida");
-            } 
-            return new ArrayList<Action>(values.subList(values.size() - count, values.size())); 
-        }
-        
-        throw new IllegalArgumentException("Función no reconocida: " + name);
     }
 }
