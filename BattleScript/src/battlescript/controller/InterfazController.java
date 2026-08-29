@@ -39,6 +39,7 @@ public final class InterfazController {
         view.showTokens(java.util.Collections.emptyList()); 
         view.showErrors(java.util.Collections.emptyList()); 
         view.setStatus("Nuevo archivo creado.");
+        view.showResults(java.util.Collections.emptyList());
     }
     
     public void open() {

@@ -16,15 +16,7 @@ public class Context {
     private List<Action> selfHistory;
     private List<Action> opponentHistory;
 
-    // Getters y setters...
-
-    public List<Action> history(String name) {
-        if ("self_history".equals(name)) return selfHistory;
-        if ("opponent_history".equals(name)) return opponentHistory;
-        throw new IllegalArgumentException("Historial desconocido: " + name);
-    }
-
-    // Resto de getters/setters (puedes generarlos con tu IDE)
+    // Getters y setters
     public int getSelfHealth() { return selfHealth; }
     public void setSelfHealth(int selfHealth) { this.selfHealth = selfHealth; }
     public int getOpponentHealth() { return opponentHealth; }
@@ -47,4 +39,14 @@ public class Context {
     public void setSelfHistory(List<Action> selfHistory) { this.selfHistory = selfHistory; }
     public List<Action> getOpponentHistory() { return opponentHistory; }
     public void setOpponentHistory(List<Action> opponentHistory) { this.opponentHistory = opponentHistory; }
+
+    public List<Action> history(String name) {
+        if ("self".equals(name) || "self_history".equals(name)) {
+            return selfHistory;
+        }
+        if ("opponent".equals(name) || "opponent_history".equals(name)) {
+            return opponentHistory;
+        }
+        throw new IllegalArgumentException("Historial desconocido: " + name);
+    }
 }

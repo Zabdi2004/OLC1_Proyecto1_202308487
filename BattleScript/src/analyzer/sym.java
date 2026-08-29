@@ -34,7 +34,7 @@ public interface sym {
   public static final int NOT = 53;
   public static final int AND = 51;
   public static final int LT = 50;
-  public static final int GET_LAST_N_MOVES = 40;
+  public static final int GET_LAST_N_MOVES = 42;
   public static final int OR = 52;
   public static final int VICTORY_BONUS = 32;
   public static final int OPPONENT_SCORE = 23;
@@ -57,11 +57,11 @@ public interface sym {
   public static final int SELF_HEALTH = 18;
   public static final int SELF_HISTORY = 26;
   public static final int ROUND_NUMBER = 24;
-  public static final int LAST_MOVE = 42;
+  public static final int LAST_MOVE = 41;
   public static final int WARRIOR_COMBO_POINTS = 36;
   public static final int ELSE = 8;
   public static final int OPPONENT_HEALTH = 19;
-  public static final int GET_MOVE = 41;
+  public static final int GET_MOVE = 40;
   public static final int THEN = 7;
   public static final int SEED = 17;
   public static final int WARRIOR = 3;
@@ -114,9 +114,9 @@ public interface sym {
   "WARRIOR_COMBO",
   "LOW_HEALTH_VICTORY",
   "GET_MOVES_COUNT",
-  "GET_LAST_N_MOVES",
   "GET_MOVE",
   "LAST_MOVE",
+  "GET_LAST_N_MOVES",
   "MAGE_ACTION",
   "WARRIOR_ACTION",
   "EQ",
