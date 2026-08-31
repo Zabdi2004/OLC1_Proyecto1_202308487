@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Reporte de Análisis - BattleScript</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+        h1 { color: #2c3e50; text-align: center; }
+        h2 { color: #34495e; border-bottom: 2px solid #3498db; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; background: white; }
+        th { background: #3498db; color: white; padding: 10px; text-align: left; }
+        td { padding: 8px; border: 1px solid #ddd; }
+        tr:nth-child(even) { background: #f2f2f2; }
+        .token { color: #2980b9; }
+        .error { background: #fdecea; }
+        .success { color: #27ae60; font-weight: bold; }
+        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #888; }
+    </style>
+</head>
+<body>
+<h1>📊 Reporte de Análisis - BattleScript</h1>
+<p><strong>Fecha:</strong> Mon Aug 31 11:57:37 CST 2026</p>
+<p><strong>Archivo:</strong> basico</p>
+<h2>📌 Tabla de Tokens</h2>
+<table>
+<tr><th>#</th><th>Lexema</th><th>Tipo</th><th>Línea</th><th>Columna</th></tr>
+<tr class='token'>
+<td>1</td>
+<td>mage</td>
+<td>MAGE</td>
+<td>7</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>2</td>
+<td>Merlin</td>
+<td>ID</td>
+<td>7</td>
+<td>6</td>
+</tr>
+<tr class='token'>
+<td>3</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>7</td>
+<td>13</td>
+</tr>
+<tr class='token'>
+<td>4</td>
+<td>initial</td>
+<td>INITIAL</td>
+<td>10</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>5</td>
+<td>:</td>
+<td>OJOS</td>
+<td>10</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>6</td>
+<td>ARCANE_BOLT</td>
+<td>MAGE_ACTION</td>
+<td>10</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>7</td>
+<td>rules</td>
+<td>RULES</td>
+<td>13</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>8</td>
+<td>:</td>
+<td>OJOS</td>
+<td>13</td>
+<td>10</td>
+</tr>
+<tr class='token'>
+<td>9</td>
+<td>[</td>
+<td>CORCHETEA</td>
+<td>13</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>10</td>
+<td>if</td>
+<td>IF</td>
+<td>15</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>11</td>
+<td>self_resource</td>
+<td>SELF_RESOURCE</td>
+<td>15</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>12</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>15</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>13</td>
+<td>20</td>
+<td>ENTERO</td>
+<td>15</td>
+<td>29</td>
+</tr>
+<tr class='token'>
+<td>14</td>
+<td>then</td>
+<td>THEN</td>
+<td>16</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>15</td>
+<td>MEDITATE</td>
+<td>MAGE_ACTION</td>
+<td>16</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>16</td>
+<td>,</td>
+<td>COMA</td>
+<td>16</td>
+<td>22</td>
+</tr>
+<tr class='token'>
+<td>17</td>
+<td>if</td>
+<td>IF</td>
+<td>19</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>18</td>
+<td>opponent_health</td>
+<td>OPPONENT_HEALTH</td>
+<td>19</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>19</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>19</td>
+<td>28</td>
+</tr>
+<tr class='token'>
+<td>20</td>
+<td>40</td>
+<td>ENTERO</td>
+<td>19</td>
+<td>31</td>
+</tr>
+<tr class='token'>
+<td>21</td>
+<td>then</td>
+<td>THEN</td>
+<td>20</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>22</td>
+<td>FIREBALL</td>
+<td>MAGE_ACTION</td>
+<td>20</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>23</td>
+<td>,</td>
+<td>COMA</td>
+<td>20</td>
+<td>22</td>
+</tr>
+<tr class='token'>
+<td>24</td>
+<td>else</td>
+<td>ELSE</td>
+<td>23</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>25</td>
+<td>ARCANE_BOLT</td>
+<td>MAGE_ACTION</td>
+<td>23</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>26</td>
+<td>]</td>
+<td>CORCHETEC</td>
+<td>25</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>27</td>
+<td>}</td>
+<td>LLAVEC</td>
+<td>27</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>28</td>
+<td>warrior</td>
+<td>WARRIOR</td>
+<td>31</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>29</td>
+<td>Ragnar</td>
+<td>ID</td>
+<td>31</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>30</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>31</td>
+<td>16</td>
+</tr>
+<tr class='token'>
+<td>31</td>
+<td>initial</td>
+<td>INITIAL</td>
+<td>34</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>32</td>
+<td>:</td>
+<td>OJOS</td>
+<td>34</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>33</td>
+<td>SLASH</td>
+<td>WARRIOR_ACTION</td>
+<td>34</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>34</td>
+<td>rules</td>
+<td>RULES</td>
+<td>37</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>35</td>
+<td>:</td>
+<td>OJOS</td>
+<td>37</td>
+<td>10</td>
+</tr>
+<tr class='token'>
+<td>36</td>
+<td>[</td>
+<td>CORCHETEA</td>
+<td>37</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>37</td>
+<td>if</td>
+<td>IF</td>
+<td>40</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>38</td>
+<td>self_resource</td>
+<td>SELF_RESOURCE</td>
+<td>40</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>39</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>40</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>40</td>
+<td>20</td>
+<td>ENTERO</td>
+<td>40</td>
+<td>28</td>
+</tr>
+<tr class='token'>
+<td>41</td>
+<td>then</td>
+<td>THEN</td>
+<td>41</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>42</td>
+<td>REST</td>
+<td>WARRIOR_ACTION</td>
+<td>41</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>43</td>
+<td>,</td>
+<td>COMA</td>
+<td>41</td>
+<td>18</td>
+</tr>
+<tr class='token'>
+<td>44</td>
+<td>if</td>
+<td>IF</td>
+<td>44</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>45</td>
+<td>opponent_health</td>
+<td>OPPONENT_HEALTH</td>
+<td>44</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>46</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>44</td>
+<td>28</td>
+</tr>
+<tr class='token'>
+<td>47</td>
+<td>35</td>
+<td>ENTERO</td>
+<td>44</td>
+<td>30</td>
+</tr>
+<tr class='token'>
+<td>48</td>
+<td>then</td>
+<td>THEN</td>
+<td>45</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>49</td>
+<td>HEAVY_STRIKE</td>
+<td>WARRIOR_ACTION</td>
+<td>45</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>50</td>
+<td>,</td>
+<td>COMA</td>
+<td>45</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>51</td>
+<td>else</td>
+<td>ELSE</td>
+<td>48</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>52</td>
+<td>SLASH</td>
+<td>WARRIOR_ACTION</td>
+<td>48</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>53</td>
+<td>]</td>
+<td>CORCHETEC</td>
+<td>50</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>54</td>
+<td>}</td>
+<td>LLAVEC</td>
+<td>52</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>55</td>
+<td>mage</td>
+<td>MAGE</td>
+<td>56</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>56</td>
+<td>Luna</td>
+<td>ID</td>
+<td>56</td>
+<td>6</td>
+</tr>
+<tr class='token'>
+<td>57</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>56</td>
+<td>11</td>
+</tr>
+<tr class='token'>
+<td>58</td>
+<td>initial</td>
+<td>INITIAL</td>
+<td>59</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>59</td>
+<td>:</td>
+<td>OJOS</td>
+<td>59</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>60</td>
+<td>MAGIC_BARRIER</td>
+<td>MAGE_ACTION</td>
+<td>59</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>61</td>
+<td>rules</td>
+<td>RULES</td>
+<td>62</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>62</td>
+<td>:</td>
+<td>OJOS</td>
+<td>62</td>
+<td>10</td>
+</tr>
+<tr class='token'>
+<td>63</td>
+<td>[</td>
+<td>CORCHETEA</td>
+<td>62</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>64</td>
+<td>if</td>
+<td>IF</td>
+<td>65</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>65</td>
+<td>self_health</td>
+<td>SELF_HEALTH</td>
+<td>65</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>66</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>65</td>
+<td>24</td>
+</tr>
+<tr class='token'>
+<td>67</td>
+<td>30</td>
+<td>ENTERO</td>
+<td>65</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>68</td>
+<td>then</td>
+<td>THEN</td>
+<td>66</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>69</td>
+<td>HEALING_RUNE</td>
+<td>MAGE_ACTION</td>
+<td>66</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>70</td>
+<td>,</td>
+<td>COMA</td>
+<td>66</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>71</td>
+<td>else</td>
+<td>ELSE</td>
+<td>69</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>72</td>
+<td>ARCANE_BOLT</td>
+<td>MAGE_ACTION</td>
+<td>69</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>73</td>
+<td>]</td>
+<td>CORCHETEC</td>
+<td>71</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>74</td>
+<td>}</td>
+<td>LLAVEC</td>
+<td>73</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>75</td>
+<td>warrior</td>
+<td>WARRIOR</td>
+<td>77</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>76</td>
+<td>Thor</td>
+<td>ID</td>
+<td>77</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>77</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>77</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>78</td>
+<td>initial</td>
+<td>INITIAL</td>
+<td>80</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>79</td>
+<td>:</td>
+<td>OJOS</td>
+<td>80</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>80</td>
+<td>SHIELD_BLOCK</td>
+<td>WARRIOR_ACTION</td>
+<td>80</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>81</td>
+<td>rules</td>
+<td>RULES</td>
+<td>83</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>82</td>
+<td>:</td>
+<td>OJOS</td>
+<td>83</td>
+<td>10</td>
+</tr>
+<tr class='token'>
+<td>83</td>
+<td>[</td>
+<td>CORCHETEA</td>
+<td>83</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>84</td>
+<td>if</td>
+<td>IF</td>
+<td>86</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>85</td>
+<td>opponent_health</td>
+<td>OPPONENT_HEALTH</td>
+<td>86</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>86</td>
+<td>&lt;=</td>
+<td>LE</td>
+<td>86</td>
+<td>28</td>
+</tr>
+<tr class='token'>
+<td>87</td>
+<td>40</td>
+<td>ENTERO</td>
+<td>86</td>
+<td>30</td>
+</tr>
+<tr class='token'>
+<td>88</td>
+<td>then</td>
+<td>THEN</td>
+<td>87</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>89</td>
+<td>HEAVY_STRIKE</td>
+<td>WARRIOR_ACTION</td>
+<td>87</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>90</td>
+<td>,</td>
+<td>COMA</td>
+<td>87</td>
+<td>26</td>
+</tr>
+<tr class='token'>
+<td>91</td>
+<td>else</td>
+<td>ELSE</td>
+<td>90</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>92</td>
+<td>SLASH</td>
+<td>WARRIOR_ACTION</td>
+<td>90</td>
+<td>14</td>
+</tr>
+<tr class='token'>
+<td>93</td>
+<td>]</td>
+<td>CORCHETEC</td>
+<td>92</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>94</td>
+<td>}</td>
+<td>LLAVEC</td>
+<td>94</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>95</td>
+<td>match</td>
+<td>MATCH</td>
+<td>98</td>
+<td>1</td>
+</tr>
+<tr class='token'>
+<td>96</td>
+<td>DueloInicial</td>
+<td>ID</td>
+<td>98</td>
+<td>7</td>
+</tr>
+<tr class='token'>
+<td>97</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>98</td>
+<td>20</td>
+</tr>
+<tr class='token'>
+<td>98</td>
+<td>players</td>
+<td>PLAYERS</td>
+<td>101</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>99</td>
+<td>:</td>
+<td>OJOS</td>
+<td>101</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>100</td>
+<td>[</td>
+<td>CORCHETEA</td>
+<td>101</td>
+<td>13</td>
+</tr>
+<tr class='token'>
+<td>101</td>
+<td>Merlin</td>
+<td>ID</td>
+<td>102</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>102</td>
+<td>,</td>
+<td>COMA</td>
+<td>102</td>
+<td>15</td>
+</tr>
+<tr class='token'>
+<td>103</td>
+<td>Ragnar</td>
+<td>ID</td>
+<td>103</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>104</td>
+<td>]</td>
+<td>CORCHETEC</td>
+<td>104</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>105</td>
+<td>rounds</td>
+<td>ROUNDS</td>
+<td>107</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>106</td>
+<td>:</td>
+<td>OJOS</td>
+<td>107</td>
+<td>11</td>
+</tr>
+<tr class='token'>
+<td>107</td>
+<td>5</td>
+<td>ENTERO</td>
+<td>107</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>108</td>
+<td>scoring</td>
+<td>SCORING</td>
+<td>110</td>
+<td>5</td>
+</tr>
+<tr class='token'>
+<td>109</td>
+<td>:</td>
+<td>OJOS</td>
+<td>110</td>
+<td>12</td>
+</tr>
+<tr class='token'>
+<td>110</td>
+<td>{</td>
+<td>LLAVEA</td>
+<td>110</td>
+<td>13</td>
+</tr>
+<tr class='token'>
+<td>111</td>
+<td>damage_point</td>
+<td>DAMAGE_POINT</td>
+<td>112</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>112</td>
+<td>:</td>
+<td>OJOS</td>
+<td>112</td>
+<td>21</td>
+</tr>
+<tr class='token'>
+<td>113</td>
+<td>1</td>
+<td>ENTERO</td>
+<td>112</td>
+<td>22</td>
+</tr>
+<tr class='token'>
+<td>114</td>
+<td>,</td>
+<td>COMA</td>
+<td>112</td>
+<td>23</td>
+</tr>
+<tr class='token'>
+<td>115</td>
+<td>healing_point</td>
+<td>HEALING_POINT</td>
+<td>114</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>116</td>
+<td>:</td>
+<td>OJOS</td>
+<td>114</td>
+<td>22</td>
+</tr>
+<tr class='token'>
+<td>117</td>
+<td>1</td>
+<td>ENTERO</td>
+<td>114</td>
+<td>23</td>
+</tr>
+<tr class='token'>
+<td>118</td>
+<td>,</td>
+<td>COMA</td>
+<td>114</td>
+<td>24</td>
+</tr>
+<tr class='token'>
+<td>119</td>
+<td>successful_defense</td>
+<td>SUCCESSFUL_DEFENSE</td>
+<td>116</td>
+<td>9</td>
+</tr>
+<tr class='token'>
+<td>120</td>
+<td>:</td>
+<td>OJOS</td>
+<td>116</td>
+<td>27</td>
+</tr>
+<tr class='token'>
+<td>121</td>
+<td>20</td>
+<td>ENTERO</td>
+<td>116</td>
+<td>28</td>
+</tr>
+<tr class='token'>
+<td>122</td>
+<td>,</td>
+<td>COMA</td>
+<td>116</td>
+<td>30</td>
+</tr>
+<tr class='token'>
+<td>123</td>
+<td>vic</td>
+<td>ID</td>
+<td>118</td>
+<td>9</td>
+</tr>
+</table>
+<h2>⚠️ Tabla de Errores</h2>
+<table>
+<tr><th>#</th><th>Descripción</th><th>Tipo</th><th>Línea</th><th>Columna</th></tr>
+<tr class='error'>
+<td>1</td>
+<td>Token inesperado durante el análisis (token: &#039;vic&#039; tipo: ID)</td>
+<td>Sintáctico</td>
+<td>118</td>
+<td>9</td>
+</tr>
+<tr class='error'>
+<td>2</td>
+<td>No fue posible recuperar el análisis desde este token (token: &#039;vic&#039; tipo: ID)</td>
+<td>Sintáctico</td>
+<td>118</td>
+<td>9</td>
+</tr>
+</table>
+<div class='footer'>Reporte generado automáticamente por BattleScript - 31/08/2026 11:57:37</div>
+</body>
+</html>
