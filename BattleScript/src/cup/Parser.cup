@@ -123,8 +123,7 @@ start with programa;
 coma_opcional ::= COMA | /* vacío */ ;
 
 bonuses_opcional ::= bloque_bonuses:bon {: RESULT = bon; :}
-                   | /* vacío */          {: RESULT = null; 
-:};
+                   | /* vacío */ {: RESULT = new Bonuses(); :};
 
 programa ::= lista_estrategias:le lista_partidas:lp main:m
              {:
@@ -371,14 +370,16 @@ expresion_primaria ::= ENTERO:i {: RESULT = new ConstantExpression(i); :}
 :};
 
 funcion ::= GET_MOVES_COUNT PARENTESISA historial:h COMA expresion:e PARENTESISC
-            {: RESULT = new FunctionCall("get_moves_count", h, e); :}
-          | GET_MOVE PARENTESISA historial:h COMA ENTERO:n PARENTESISC
-            {: RESULT = new FunctionCall("get_move", h, new ConstantExpression(n)); :}
-          | LAST_MOVE PARENTESISA historial:h PARENTESISC
-            {: RESULT = new FunctionCall("last_move", h); :}
-          | GET_LAST_N_MOVES PARENTESISA historial:h COMA ENTERO:n PARENTESISC
-            {: RESULT = new FunctionCall("get_last_n_moves", h, new ConstantExpression(n)); :}
+             {: RESULT = new FunctionCall("get_moves_count", h, e); :}
+           | GET_MOVES_COUNT PARENTESISA funcion:h COMA expresion:e PARENTESISC
+             {: RESULT = new FunctionCall("get_moves_count", h, e); :}
+           | GET_MOVE PARENTESISA historial:h COMA ENTERO:n PARENTESISC
+             {: RESULT = new FunctionCall("get_move", h, new ConstantExpression(n)); :}
+           | LAST_MOVE PARENTESISA historial:h PARENTESISC
+             {: RESULT = new FunctionCall("last_move", h); :}
+           | GET_LAST_N_MOVES PARENTESISA historial:h COMA ENTERO:n PARENTESISC
+             {: RESULT = new FunctionCall("get_last_n_moves", h, new ConstantExpression(n)); :}
 ;
 
 historial ::= SELF_HISTORY {: RESULT = "self"; :}
-           | OPPONENT_HISTORY {: RESULT = "opponent"; :};
+            | OPPONENT_HISTORY {: RESULT = "opponent"; :};
