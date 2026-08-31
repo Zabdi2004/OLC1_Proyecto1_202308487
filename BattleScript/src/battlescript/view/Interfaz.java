@@ -118,9 +118,9 @@ public class Interfaz extends javax.swing.JFrame {
         Nuevo = new javax.swing.JMenuItem();
         Guardar = new javax.swing.JMenuItem();
         Salir = new javax.swing.JMenuItem();
-        Ayuda = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Battle Script");
 
         btn_Abrir.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         btn_Abrir.setText("Abrir");
@@ -270,9 +270,6 @@ public class Interfaz extends javax.swing.JFrame {
 
         jMenuBar1.add(Archivo);
 
-        Ayuda.setText("Ayuda");
-        jMenuBar1.add(Ayuda);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -387,7 +384,6 @@ public class Interfaz extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Abrir;
     private javax.swing.JMenu Archivo;
-    private javax.swing.JMenu Ayuda;
     private javax.swing.JLabel Estado;
     private javax.swing.JMenuItem Guardar;
     private javax.swing.JMenuItem Nuevo;

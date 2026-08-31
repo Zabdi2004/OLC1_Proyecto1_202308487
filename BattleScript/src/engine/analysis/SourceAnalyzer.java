@@ -9,21 +9,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class SourceAnalyzer {
+
     public AnalysisResult analyze(String source) {
-        ProgramStore store = ProgramStore.getInstance(); 
-        store.clear(); 
+
+        ProgramStore store = ProgramStore.getInstance();
+
+        // Limpiar el programa anterior antes de analizar uno nuevo.
+        store.clear();
+
+        // Limpiar errores y tokens del análisis anterior.
         Lexer.clearErrors();
-        List<Error> errors = new ArrayList<Error>();
-        try { 
-            Parser parser = new Parser(new Lexer(new StringReader(source == null ? "" : source))); 
-            parser.parse(); errors.addAll(parser.getErrors()); 
-            
+
+        List<Error> errors = new ArrayList<>();
+
+        try {
+
+            String input = source == null ? "" : source;
+
+            Lexer lexer = new Lexer(new StringReader(input));
+
+            Parser parser = new Parser(lexer);
+
+            parser.parse();
+
+            // Obtener errores léxicos y sintácticos.
+            errors.addAll(parser.getErrors());
+
+        } catch (Exception exception) {
+
+            errors.add(
+                new Error(
+                    "Sintáctico",
+                    exception.getMessage() == null
+                        ? "No fue posible analizar la entrada"
+                        : exception.getMessage(),
+                    0,
+                    0
+                )
+            );
         }
-        catch (Exception exception) { 
-            errors.add(new Error("Sintáctico", exception.getMessage() == null ? "No fue posible analizar la entrada" : exception.getMessage(), 0, 0)); }
-        if (errors.isEmpty()) {
-            errors.addAll(new SemanticValidator().validate(store));
-        }
-        return new AnalysisResult(store, Lexer.getTokens(), errors);
+
+        /*
+         * Aunque existan errores léxicos o sintácticos,
+         * se valida todo lo que el parser consiguió construir.
+         */
+        errors.addAll(new SemanticValidator().validate(store));
+
+        return new AnalysisResult(
+            store,
+            Lexer.getTokens(),
+            errors
+        );
     }
 }

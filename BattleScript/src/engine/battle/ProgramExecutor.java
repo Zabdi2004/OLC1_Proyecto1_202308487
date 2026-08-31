@@ -8,91 +8,101 @@ import battlescript.model.Strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Se encarga de ejecutar las instrucciones contenidas
- * en el bloque main del programa 
- * 
- * Su función es:
- *
- * 1. Obtener las instrucciones run del bloque main.
- * 2. Buscar las partidas indicadas en cada instrucción.
- * 3. Obtener las estrategias de los jugadores.
- * 4. Crear y ejecutar el BattleEngine.
- * 5. Guardar los resultados de cada partida.
- */
 public class ProgramExecutor {
 
     public List<BattleResult> execute(ProgramStore program) {
 
-        // Lista donde se almacenarán los resultados de las partidas.
         List<BattleResult> results = new ArrayList<>();
 
-        //Verificar que el bloque main exista
-        if (program.getMainBlock() == null) {
-            throw new RuntimeException(
-                "No se encontró el bloque main"
-            );
+        if (program == null) {
+            return results;
         }
 
-        //Recorre cada instrucción run definida dentro del main.
-        for (RunInstruction run : program.getMainBlock().getRunInstructions()) {
+        if (program.getMainBlock() == null) {
+            return results;
+        }
 
-            // Obtiene la semilla utilizada para la ejecución.
+        /*
+         * Recorre cada instrucción RUN del bloque main.
+         */
+        for (RunInstruction run :
+                program.getMainBlock().getRunInstructions()) {
+
+            if (run == null) {
+                continue;
+            }
+
             int seed = run.getSeed();
 
             /*
-             * Una misma instrucción run puede contener varias
-             * partidas, por lo que se recorren sus nombres.
+             * Una instrucción RUN puede contener
+             * varias partidas.
              */
             for (String matchName : run.getMatchIds()) {
-                // Busca la partida dentro del programa.
-                Match match = program.getMatch(matchName);
 
-                //verificar que la partida exista
+                if (matchName == null) {
+                    continue;
+                }
+
+                /*
+                 * Buscar la partida.
+                 */
+                Match match =
+                    program.getMatch(matchName);
+
+                /*
+                 * Si la partida no existe, se omite y
+                 * se continúa con la siguiente.
+                 */
                 if (match == null) {
-
-                    throw new RuntimeException(
-                        "Partida no encontrada: " + matchName
-                    );
+                    continue;
                 }
 
                 /*
-                 * Obtiene las estrategias correspondientes a los
-                 * dos jugadores definidos en la partida.
+                 * Obtener las estrategias de los jugadores.
                  */
-                Strategy p1 = program.getStrategy(match.getPlayerOne());
+                Strategy p1 =
+                    program.getStrategy(match.getPlayerOne());
 
-                Strategy p2 = program.getStrategy(match.getPlayerTwo());
+                Strategy p2 =
+                    program.getStrategy(match.getPlayerTwo());
 
-                //Verifica que ambas estrategias existan.
-                if (p1 == null || p2 == null) {
-                    throw new RuntimeException(
-                        "Estrategia no encontrada en la partida "
-                        + matchName
-                    );
-                }
-                
                 /*
-                 * Se crea el motor de batalla y se ejecuta
-                 * la partida.
+                 * Si alguna estrategia no existe,
+                 * esta partida no puede ejecutarse.
                  *
-                 * Aquí ProgramExecutor deja de encargarse
-                 * de la ejecución y BattleEngine toma el control
-                 * de la lógica del combate.
+                 * Pero NO detenemos las demás partidas.
                  */
-                BattleResult result =
-                    new BattleEngine().run(
-                        match,
-                        p1,
-                        p2,
-                        seed
-                    );
+                if (p1 == null || p2 == null) {
+                    continue;
+                }
 
-                // Guarda el resultado de la partida.
-                results.add(result);
+                try {
+
+                    /*
+                     * Ejecutar solamente la partida
+                     * que tiene todas sus dependencias.
+                     */
+                    BattleResult result =
+                        new BattleEngine().run(
+                            match,
+                            p1,
+                            p2,
+                            seed
+                        );
+
+                    results.add(result);
+
+                } catch (RuntimeException exception) {
+
+                    /*
+                     * Si una partida falla durante su ejecución,
+                     * no se detienen las demás partidas.
+                     */
+                    continue;
+                }
             }
         }
-        // Devuelve los resultados de todas las partidas ejecutadas.
         return results;
     }
 }

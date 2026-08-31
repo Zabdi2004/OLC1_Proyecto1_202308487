@@ -11,7 +11,7 @@
     import java.nio.file.Path;
     import engine.analysis.ReportGenerator;
     import java.awt.Desktop;
-import java.util.Collections;
+    import java.util.Collections;
     import java.util.List;
     import javax.swing.JFileChooser;
     import javax.swing.JOptionPane;
@@ -24,7 +24,7 @@ import java.util.Collections;
      * - Guardar archivos
      * - Analizar y ejecutar el código escrito por el usuario.
      * - Mostrar tokens, errores y resultados en la interfaz.
-     */
+     */ 
     public final class InterfazController {
 
         // Referencia a la ventana principal de la aplicación.
@@ -225,9 +225,13 @@ import java.util.Collections;
 
             // 4. Si hay errores, detener la ejecución
             if (!result.isSuccessful()) {
-                JOptionPane.showMessageDialog(view, "Se encontraron errores. Revisa la pestaña Errores.", "Análisis detenido", JOptionPane.WARNING_MESSAGE);
-                view.setStatus("Análisis fallido - errores encontrados");
-                return;
+                JOptionPane.showMessageDialog(
+                    view,
+                    "Se encontraron errores en el código. "
+                    + "Se ejecutarán únicamente las partidas que puedan ser procesadas correctamente.",
+                    "Análisis con errores",
+                    JOptionPane.WARNING_MESSAGE
+                );
             }
 
             // 5. Ejecutar partidas

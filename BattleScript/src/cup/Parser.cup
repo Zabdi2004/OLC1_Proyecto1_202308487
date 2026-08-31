@@ -135,13 +135,25 @@ programa ::= lista_estrategias:le lista_partidas:lp main:m
 lista_estrategias ::= estrategia:e
                       {:
                           List<Strategy> list = new ArrayList<>();
-                          list.add(e);
+                          if (e != null) {
+                              list.add(e);
+                          }
                           RESULT = list;
                       :}
                     | lista_estrategias:l estrategia:e
                       {:
-                          l.add(e);
+                          if (e != null) {
+                              l.add(e);
+                          }
                           RESULT = l;
+                      :}
+                    | lista_estrategias:l error
+                      {:
+                          RESULT = l;
+                          parser.report_error(
+                              "Se descartó una estrategia con errores y se continuará con la siguiente.",
+                              null
+                          );
                       :}
                     | /* vacío */
                       {:
@@ -149,20 +161,32 @@ lista_estrategias ::= estrategia:e
                       :};
 
 lista_partidas ::= partida:p
-                   {:
-                       List<Match> list = new ArrayList<>();
-                       list.add(p);
-                       RESULT = list;
-                   :}
-                 | lista_partidas:l partida:p
-                   {:
-                       l.add(p);
-                       RESULT = l;
-                   :}
-                 | /* vacío */
-                   {:
-                       RESULT = new ArrayList<>();
-                   :};
+                    {:
+                        List<Match> list = new ArrayList<>();
+                        if (p != null) {
+                            list.add(p);
+                        }
+                        RESULT = list;
+                    :}
+                  | lista_partidas:l partida:p
+                    {:
+                        if (p != null) {
+                            l.add(p);
+                        }
+                        RESULT = l;
+                    :}
+                  | lista_partidas:l error
+                    {:
+                        RESULT = l;
+                        parser.report_error(
+                            "Se descartó una partida con errores y se continuará con la siguiente.",
+                            null
+                        );
+                    :}
+                  | /* vacío */
+                    {:
+                        RESULT = new ArrayList<>();
+                    :};
 
 estrategia ::= MAGE ID:nombre LLAVEA INITIAL OJOS accion_mago:ini reglas_mago:r LLAVEC
                {:
@@ -301,20 +325,32 @@ main ::= MAIN LLAVEA lista_run:lr LLAVEC
          :};
 
 lista_run ::= instruccion_run:ir
-              {:
-                  List<RunInstruction> list = new ArrayList<>();
-                  list.add(ir);
-                  RESULT = list;
-              :}
-            | lista_run:l instruccion_run:ir
-              {:
-                  l.add(ir);
-                  RESULT = l;
-              :}
-            | /* vacío */
-              {:
-                  RESULT = new ArrayList<>();
-              :};
+               {:
+                   List<RunInstruction> list = new ArrayList<>();
+                   if (ir != null) {
+                       list.add(ir);
+                   }
+                   RESULT = list;
+               :}
+             | lista_run:l instruccion_run:ir
+               {:
+                   if (ir != null) {
+                       l.add(ir);
+                   }
+                   RESULT = l;
+               :}
+             | lista_run:l error
+               {:
+                   RESULT = l;
+                   parser.report_error(
+                       "Se descartó una instrucción RUN con errores y se continuará con la siguiente.",
+                       null
+                   );
+               :}
+             | /* vacío */
+               {:
+                   RESULT = new ArrayList<>();
+               :};
 
 instruccion_run ::= RUN CORCHETEA lista_ids:ids CORCHETEC WITH LLAVEA SEED OJOS ENTERO:seed LLAVEC
                     {:
