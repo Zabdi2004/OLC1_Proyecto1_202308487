@@ -18,7 +18,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Interfaz extends javax.swing.JFrame {
     
+    // Logger utilizado para registrar errores relacionados con la interfaz.
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Interfaz.class.getName());
+    
+    // Controlador encargado de coordinar las acciones de la interfaz
+    // con el analizador y el motor de ejecución.
     private InterfazController controller;
     /**
      * Creates new form Interfaz
@@ -26,9 +30,7 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz() {
         initComponents();
         controller = new InterfazController(this);
-        
-        
-        //Results.setEditable(false);
+        Results.setEditable(false);
     }
 
     public String getSourceText() { return jTextArea1.getText(); }

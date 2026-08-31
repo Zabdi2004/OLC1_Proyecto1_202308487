@@ -6,53 +6,55 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Representa una estrategia o personaje
+ * Representa la estrategia de un personaje
  *
- * Una estrategia contiene:
- * - nombre
- * - tipo de personaje
- * - acción inicial
- * - conjunto de reglas que determinan sus acciones durante la batalla
+ * Una estrategia define:
+ *
+ * - El nombre del personaje.
+ * - El tipo de personaje: mago o guerrero.
+ * - La acción inicial que realizará.
+ * - La lista de reglas que utilizará para decidir sus acciones.
  */
 public class Strategy {
-    private final String name;// Nombre de estrategia
-    private final ClassType classType; // Tipo de personaje
 
-    // Acción que ejecutará el personaje al comenzar una partida.
+    // Nombre de la estrategia o personaje
+    private final String name;
+
+    private final ClassType classType;
+
+    // Acción que se ejecuta al inicio de la batalla
     private final Action initialAction;
 
-    // Reglas utilizadas para decidir las acciones posteriores.
+    // Reglas que determinan las acciones posteriores del personaje.
     private final List<Rule> rules;
 
     /**
-     * Constructor utilizado por el Parser.
-     *
-     * El Parser crea una Strategy cuando encuentra una declaración
-     * mage o warrior en el archivo
+     * Constructor utilizado principalmente por el Parser
+     * para construir una estrategia a partir del programa leído.
      */
     public Strategy(String name, ClassType classType, Action initialAction, List<Rule> rules) {
         this.name = name;
         this.classType = classType;
         this.initialAction = initialAction;
 
-        // copia de la lista para evitar modificaciones externas
+        //Se crea una nueva lista a partir de la recibida.
         this.rules = new ArrayList<>(rules);
     }
 
-    /**
-     * Constructor por defecto.
-     *
-     * Se utiliza cuando se necesita crear una estrategia
-     * con valores iniciales válidos.
-     */
+    //Constructor vacío.
     public Strategy() {
         this("", ClassType.WARRIOR, Action.SLASH, new ArrayList<>());
     }
 
+    // Obtiene el nombre de la estrategia.
     public String getName() { return name; }
+
+    // Obtiene el tipo de personaje.
     public ClassType getClassType() { return classType; }
-    public Action getInitialAction() { return initialAction; }
     
-    // getter de las reglas de la estrategia 
+    // Obtiene la acción inicial.
+    public Action getInitialAction() { return initialAction; }
+
+    //Obtiene las reglas de la estrategia.
     public List<Rule> getRules() { return Collections.unmodifiableList(rules); }
 }
