@@ -110,7 +110,7 @@ non terminal Bonuses bonuses_opcional;
 non terminal Expression lista_expresion;
 
 /* Las precedencias se declaran después de los símbolos y antes del inicio. */
-precedence left COMA;
+/*precedence left COMA;*/
 precedence left OR;
 precedence left AND;
 precedence nonassoc EQ, NEQ, LT, GT, LE, GE;
@@ -384,26 +384,41 @@ expresion_comparacion ::= expresion_unaria:e1 EQ expresion_unaria:e2 {: RESULT =
                        | expresion_unaria:e {: RESULT = e; :};
 expresion_unaria ::= NOT expresion_unaria:e {: RESULT = new UnaryExpression("!", e); :}
                   | expresion_primaria:e {: RESULT = e; :};
-expresion_primaria ::= ENTERO:i {: RESULT = new ConstantExpression(i); :}
-                    | CORCHETEA lista_acciones:list CORCHETEC {: RESULT = new ConstantExpression(list); :}
-                    | DECIMAL:d {: RESULT = new ConstantExpression(d); :}
-                    | SELF_HEALTH {: RESULT = new VariableExpression("self_health"); :}
-                    | OPPONENT_HEALTH {: RESULT = new VariableExpression("opponent_health"); :}
-                    | SELF_RESOURCE {: RESULT = new VariableExpression("self_resource"); :}
-                    | OPPONENT_RESOURCE {: RESULT = new VariableExpression("opponent_resource"); :}
-                    | SELF_SCORE {: RESULT = new VariableExpression("self_score"); :}
-                    | OPPONENT_SCORE {: RESULT = new VariableExpression("opponent_score"); :}
-                    | ROUND_NUMBER {: RESULT = new VariableExpression("round_number"); :}
-                    | TOTAL_ROUNDS {: RESULT = new VariableExpression("total_rounds"); :}
-                    | RANDOM {: RESULT = new VariableExpression("random"); :}
-                    | ID:id {: RESULT = new VariableExpression(id); :}
-                    | funcion:f {: RESULT = f; :}
-                    | PARENTESISA expresion:e PARENTESISC {: RESULT = e; :}
-                    | MAGE_ACTION:a {: RESULT = new ConstantExpression(Action.fromString(a)); :}
-                    | WARRIOR_ACTION:a {: RESULT = new ConstantExpression(Action.fromString(a)); :}
-                    | CORCHETEA lista_acciones:list CORCHETEC {: RESULT = new ConstantExpression(list); 
-
-:};
+expresion_primaria ::= ENTERO:i
+                        {: RESULT = new ConstantExpression(i); :}
+                    | DECIMAL:d
+                        {: RESULT = new ConstantExpression(d); :}
+                    | SELF_HEALTH
+                        {: RESULT = new VariableExpression("self_health"); :}
+                    | OPPONENT_HEALTH
+                        {: RESULT = new VariableExpression("opponent_health"); :}
+                    | SELF_RESOURCE
+                        {: RESULT = new VariableExpression("self_resource"); :}
+                    | OPPONENT_RESOURCE
+                        {: RESULT = new VariableExpression("opponent_resource"); :}
+                    | SELF_SCORE
+                        {: RESULT = new VariableExpression("self_score"); :}
+                    | OPPONENT_SCORE
+                        {: RESULT = new VariableExpression("opponent_score"); :}
+                    | ROUND_NUMBER
+                        {: RESULT = new VariableExpression("round_number"); :}
+                    | TOTAL_ROUNDS
+                        {: RESULT = new VariableExpression("total_rounds"); :}
+                    | RANDOM
+                        {: RESULT = new VariableExpression("random"); :}
+                    | ID:id
+                        {: RESULT = new VariableExpression(id); :}
+                    | funcion:f
+                        {: RESULT = f; :}
+                    | PARENTESISA expresion:e PARENTESISC
+                        {: RESULT = e; :}
+                    | MAGE_ACTION:a
+                        {: RESULT = new ConstantExpression(Action.fromString(a)); :}
+                    | WARRIOR_ACTION:a
+                        {: RESULT = new ConstantExpression(Action.fromString(a)); :}
+                    | CORCHETEA lista_acciones:list CORCHETEC
+                        {: RESULT = new ConstantExpression(list); :}
+                    ;
 
 funcion ::= GET_MOVES_COUNT PARENTESISA historial:h COMA expresion:e PARENTESISC
              {: RESULT = new FunctionCall("get_moves_count", h, e); :}

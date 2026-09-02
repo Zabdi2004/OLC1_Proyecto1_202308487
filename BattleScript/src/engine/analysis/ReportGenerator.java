@@ -19,11 +19,6 @@ public class ReportGenerator {
 
     /**
      * Genera un reporte HTML y lo abre en el navegador predeterminado.
-     *
-     * @param tokens    Lista de tokens reconocidos (puede ser vacía pero no nula).
-     * @param errors    Lista de errores encontrados (puede ser vacía pero no nula).
-     * @param fileName  Nombre base del archivo (ej. "mi_programa").
-     * @return La ruta absoluta del archivo generado, o null si falló.
      */
     public static Path generateReport(List<TokenInfo> tokens, List<Error> errors, String fileName) {
         try {

@@ -21,10 +21,12 @@ public class Fighter {
     private boolean defending;
     private boolean warCryBonus;
     private final List<Action> history;
+    private final List<Action> comboActionsAwarded;
 
     public Fighter(Strategy strategy) {
         this.strategy = strategy;
         this.history = new ArrayList<>();
+        this.comboActionsAwarded = new ArrayList<>();
         ClassType type = strategy.getClassType();
 
         // Inicializar estadísticas según clase
@@ -109,5 +111,15 @@ public class Fighter {
 
     public boolean isAlive() {
         return health > 0;
+    }
+    
+    public boolean comboAlreadyAwarded(Action action) {
+        return comboActionsAwarded.contains(action);
+    }
+
+    public void registerComboAward(Action action) {
+        if (action != null && !comboActionsAwarded.contains(action)) {
+            comboActionsAwarded.add(action);
+        }
     }
 }
